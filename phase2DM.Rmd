@@ -485,17 +485,14 @@ Normlization
 ```{r}
 normalize=function(x){return ((x-min(x))/(max(x)))}
 
-water_potability$Solids=normalize(water_potability$Solids)
 water_potability$Sulfate=normalize(water_potability$Sulfate)
 water_potability$Conductivity=normalize(water_potability$Conductivity)
-water_potability$Organic_carbon=normalize(water_potability$Organic_carbon)
-water_potability$Trihalomethanes=normalize(water_potability$Trihalomethanes)
 water_potability$Turbidity=normalize(water_potability$Turbidity)
 water_potability$ph=normalize(water_potability$ph)
 water_potability$Chloramines=normalize(water_potability$Chloramines)
 water_potability$Hardness=water_potability$Hardness/1000
 
-water_potability$Hardness<-normalize(water_potability$Hardness)
+water_potability$Hardness<-Z_normalize(water_potability$Hardness)
 print(water_potability)
 ```
 Description:
