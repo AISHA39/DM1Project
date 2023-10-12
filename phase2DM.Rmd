@@ -5,19 +5,12 @@ output: html_notebook
 
 
 We are collecting a dataset on water quality to train a machine learning model
-
 for binary classification: determining whether water is safe for consumption (1)
-
 or not (0). This model will help with water treatment decisions and ensure
-
 compliance with quality standards.
-
 We applied different summarization and plotting methods to help us to understand
-
 our dataset, such as scatter, histogram and bar plot. Then, we applyed
-
 preprocess in our data using data cleaning, data transformation 
-
 and feature selection.
 
 ```{r}
