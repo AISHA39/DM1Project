@@ -1,12 +1,13 @@
 ---
 title: "R Notebook"
 output: html_notebook
----
-```{markdown}
-#We are collecting a dataset on water quality to train a machine learning model for binary classification: determining whether water is safe for consumption (1) or not (0). This model will help with water treatment decisions and ensure compliance with quality standards.
+--- 
 
-#We applied different summarization and plotting methods to help us to understand our dataset, such as scatter, histogram and bar plot. Then, we applyed preprocess in our data using data cleaning, data transformation and feature selection.
-```
+
+We are collecting a dataset on water quality to train a machine learning model for binary classification: determining whether water is safe for consumption (1) or not (0). This model will help with water treatment decisions and ensure compliance with quality standards.
+
+We applied different summarization and plotting methods to help us to understand our dataset, such as scatter, histogram and bar plot. Then, we applyed preprocess in our data using data cleaning, data transformation and feature selection.
+```{r}
 #library:
 #install.packages("caret")
 #install.packages("glmnet")
@@ -23,60 +24,70 @@ library(ggplot2)
 library(randomForest)
 
 getwd()
-summary(water_potability)
 #setwd("/Users/mahayie/Desktop/326p")
 #getwd()
 
-water_potability = read.csv('water_potability.csv')
+water_potability = read.csv('Dataset/water_potability.csv')
 
 View(water_potability)
 
 str(water_potability)
 summary(water_potability)
+```
 
-
-#Checking for missing values:
+Checking for missing values:
+```{r}
 dim(water_potability)
 sum(is.na(water_potability))
-
-#Remove rows with missing values
+```
+Remove rows with missing values
+```{r}
 water_potability = na.omit(water_potability)
-#View(water_potability)
+View(water_potability)
+```
 
-#Description:
-#The absence of data in certain variables or columns in a dataset is referred to as missing or null values due to various reasons.  It can have a negative impact on the dataset's efficiency and the information that can be taken from it later, so we checked to see whether our data had missing or null values and eliminated these rows to produce a more efficient dataset.
+Description:
+The absence of data in certain variables or columns in a dataset is referred to as missing or null values due to various reasons.  It can have a negative impact on the dataset's efficiency and the information that can be taken from it later, so we checked to see whether our data had missing or null values and eliminated these rows to produce a more efficient dataset.
 
 
-#Standard deviation:
-
+Standard deviation:
+```{r}
 sd(water_potability$Turbidity)
 sd(water_potability$Solids)
 sd(water_potability$Conductivity)
 sd(water_potability$Organic_carbon)
 sd(water_potability$ph)
+```
 
-#Mean:
+Mean:
+```{r}
 mean(water_potability$Turbidity)
 mean(water_potability$Solids) 
 mean(water_potability$Conductivity) 
 mean(water_potability$Organic_carbon) 
 mean(water_potability$ph) 
+```
 
-#Median
+Median
+```{r}
 median(water_potability$Turbidity)
 median(water_potability$Solids)
 median(water_potability$Conductivity)
 median(water_potability$Organic_carbon)
 median(water_potability$ph)
+```
 
-#Variance
+Variance
+```{r}
 var(water_potability$Turbidity)
 var(water_potability$Solids)
 var(water_potability$Conductivity)
 var(water_potability$Organic_carbon)
 var(water_potability$ph)
+```
 
-#Statistical Measures:
+Statistical Measures:
+```{r}
 summary(water_potability$Conductivity)
 summary(water_potability$Organic_carbon)
 summary(water_potability$Hardness)
@@ -87,19 +98,23 @@ summary(water_potability$Sulfate)
 summary(water_potability$Trihalomethanes)
 summary(water_potability$Turbidity)
 summary(water_potability$ph)
+```
 
-#Descriotion
-#With using minimum, maximum, mean, median laws it helps to provide an overview of the data's key characteristics
+Descriotion:
+With using minimum, maximum, mean, median laws it helps to provide an overview of the data's key characteristics
 
-#outliers
 
-#before removing outlier:
+outliers
+before removing outlier:
+```{r}
 dim(water_potability)
 head(water_potability)
+```
 
-#removing
+removing outliers:
 
-#ph
+- ph
+```{r}
 summary(water_potability$ph)
 quartiles <- quantile(water_potability$ph, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -109,8 +124,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(ph ~ Potability, data = water_potability)
-#(water_potability$ph)
+
 boxplot(ph ~ Potability, data = water_potability)
 
 repeat {
@@ -118,14 +132,17 @@ repeat {
   out_val
   out_rows <- which(water_potability$ph %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+  
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$ph)
 
 #-------------------------------------------
-#Hardness
+```
+
+-Hardness
+```{r}
 summary(water_potability$Hardness)
 quartiles <- quantile(water_potability$Hardness, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -135,8 +152,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Hardness ~ Potability, data = water_potability)
-#(water_potability$Hardness)
+
 boxplot(Hardness ~ Potability, data = water_potability)
 
 repeat {
@@ -144,14 +160,17 @@ repeat {
   out_val
   out_rows <- which(water_potability$Hardness %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Hardness)
 
 #-------------------------------------------
-#Solids
+```
+
+-Solids
+```{r}
 summary(water_potability$Solids)
 quartiles <- quantile(water_potability$Solids, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -161,8 +180,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Solids ~ Potability, data = water_potability)
-#(water_potability$Solids)
+
 boxplot(Solids ~ Potability, data = water_potability)
 
 repeat {
@@ -170,14 +188,17 @@ repeat {
   out_val
   out_rows <- which(water_potability$Solids %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Solids)
 
 #-------------------------------------------
-#Chloramines
+```
+
+-Chloramines
+```{r}
 summary(water_potability$Chloramines)
 quartiles <- quantile(water_potability$Chloramines, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -187,8 +208,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Chloramines ~ Potability, data = water_potability)
-#(water_potability$Chloramines)
+
 boxplot(Chloramines ~ Potability, data = water_potability)
 
 repeat {
@@ -196,14 +216,18 @@ repeat {
   out_val
   out_rows <- which(water_potability$Chloramines %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Chloramines)
 
 #-------------------------------------------
-#Sulfate
+
+```
+
+-Sulfate
+```{r}
 summary(water_potability$Sulfate)
 quartiles <- quantile(water_potability$Sulfate, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -213,8 +237,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Sulfate ~ Potability, data = water_potability)
-#(water_potability$Sulfate)
+
 boxplot(Sulfate ~ Potability, data = water_potability)
 
 repeat {
@@ -222,14 +245,18 @@ repeat {
   out_val
   out_rows <- which(water_potability$Sulfate %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Sulfate)
 
 #-------------------------------------------
-#Conductivity
+
+```
+
+-Conductivity
+```{r}
 summary(water_potability$Conductivity)
 quartiles <- quantile(water_potability$Conductivity, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -239,8 +266,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Conductivity ~ Potability, data = water_potability)
-#(water_potability$Conductivity)
+
 boxplot(Conductivity ~ Potability, data = water_potability)
 
 repeat {
@@ -248,14 +274,17 @@ repeat {
   out_val
   out_rows <- which(water_potability$Conductivity %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Conductivity)
 
 #-------------------------------------------
-#Organic_carbon
+```
+
+-Organic_carbon
+```{r}
 summary(water_potability$Organic_carbon)
 quartiles <- quantile(water_potability$Organic_carbon, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -265,8 +294,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Organic_carbon ~ Potability, data = water_potability)
-#(water_potability$Organic_carbon)
+
 boxplot(Organic_carbon ~ Potability, data = water_potability)
 
 repeat {
@@ -274,14 +302,17 @@ repeat {
   out_val
   out_rows <- which(water_potability$Organic_carbon %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Organic_carbon)
 
 #-------------------------------------------
-#Trihalomethanes
+```
+
+-Trihalomethanes
+```{r}
 summary(water_potability$Trihalomethanes)
 quartiles <- quantile(water_potability$Trihalomethanes, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -291,8 +322,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Trihalomethanes ~ Potability, data = water_potability)
-#(water_potability$Trihalomethanes)
+
 boxplot(Trihalomethanes ~ Potability, data = water_potability)
 
 repeat {
@@ -300,14 +330,17 @@ repeat {
   out_val
   out_rows <- which(water_potability$Trihalomethanes %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Trihalomethanes)
 
 #-------------------------------------------
-#Turbidity
+```
+
+-Turbidity
+```{r}
 summary(water_potability$Turbidity)
 quartiles <- quantile(water_potability$Turbidity, probs = c(.25, .75), na.rm = FALSE)
 quartiles
@@ -317,8 +350,7 @@ lower <- quartiles[1] - 1.5*iqr
 lower
 upper <- quartiles[2] + 1.5*iqr
 upper
-#(Turbidity ~ Potability, data = water_potability)
-#(water_potability$Turbidity)
+
 boxplot(Turbidity ~ Potability, data = water_potability)
 
 repeat {
@@ -326,69 +358,85 @@ repeat {
   out_val
   out_rows <- which(water_potability$Turbidity %in% c(out_val))
   out_rows
-  #water_potability[out_rows,]
+
   if(sum(out_rows) > 0) water_potability <- water_potability[-out_rows,]
   else {break}
 }
 summary(water_potability$Turbidity)
+```
 
 
-
-#after removing outliers:
+After removing outliers:
+```{r}
 dim(water_potability)
-#str(water_potability)
+str(water_potability)
 head(water_potability)
+```
+
+Description:
+Removing outliers from a dataset is critical for assuring the quality and reliability of statistical analysis and machine learning models. We found all outliers in the numerical attributes and subsequently eliminated the rows containing the outliers. 
 
 
-#Description:
-#Removing outliers from a dataset is critical for assuring the quality and reliability of statistical analysis and machine learning models. We found all outliers in the numerical attributes and subsequently eliminated the rows containing the outliers. 
 
-#charts
+Charts
 
-
-#Histogram
+Histogram
+```{r}
 hist(water_potability$ph)
 hist(water_potability$Chloramines)
 hist(water_potability$Hardness)
+```
 
-//Potability//
-//Turbidity//
-
-#Bar Plot
+Bar Plot
+```{r}
 water_potability$Potability %>% table() %>% barplot()
 
 # add colors
 bb <- water_potability$ph %>% table() %>% barplot( main='ph',col=c('pink'))
 
+```
+
+Pie chart
+```{r}
 water_potability$Potability %>% table() %>% pie() # plot pie chart without percentages
 
-#Scatter Plot
+tab <- water_potability$Potability %>% table()
+precentages <- tab %>% prop.table() %>% round(3)*100
+txt <- paste0(names(c("Not Potable","Potable")),'\n',precentages,'%')
+pie(tab,labels = c("Not potabale","Potabale"))
+```
+
+Scatter Plot
+```{r}
 with(water_potability, plot(Turbidity, ph, col = Potability, pch = as.numeric(Potability)))
-
+```
  
-#Description:
-#Histogram:
-#The histogram shows the frequency of ph in the dataset; we noted that the majority of values fall within the usual range, which is about between 6 and 8, but it also shows several outliers.
-#Scatter plot:
-#This scatter demonstrates the correlation and proportionality between the two qualities, allowing us to establish whether or not turbidity and pH are connected.
-#Bar Plot
-#thr bar plot represent how ph levels affect water portability in the dataset it indicates that ph level above 10 is not portibal and humans cant consume it 
-
-#Remove Redundant Features
+Description:
+-Histogram:
+  The histogram shows the frequency of ph in the dataset; we noted that the majority of values fall    within the usual range, which is about between 6 and 8, but it also shows several outliers.
+-Scatter plot:
+  This scatter demonstrates the correlation and proportionality between the two qualities, allowing    us to establish whether or not turbidity and pH are connected.
+-Bar Plot
+  the bar plot represent how ph levels affect water portability in the dataset it indicates that ph    level above 10 is not portibal and humans cant consume it 
 
 
+
+Remove Redundant Features:
+```{r}
 correlation_matrix <- cor(water_potability[,1:9])
 high_correlation_features <- findCorrelation(correlation_matrix, cutoff = 0.5)
 print(high_correlation_features)
 heatmap(correlation_matrix)
+```
+Description:
+This will find the correlation between the features and represent it in heat map
 
-#Descriotion
-#This will find the correlation between the features and represent it in heat map
 
 
-#Feature selection
+Feature selection
 
-#Rank Features By Importance:
+Rank Features By Importance:
+```{r}
 #train random forest model and calculate feature importance
 rf = randomForest(x= water_potability[,1:9],y= water_potability[,10])
 var_imp <- varImp(rf, scale = FALSE)
@@ -403,9 +451,10 @@ ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
   ylab("IncNodePurity") +
   xlab("Variable Name") +
   coord_flip()
+```
 
-
-#Recursive Feature elimination
+Recursive Feature elimination:
+```{r}
 control <- rfeControl(functions=rfFuncs, method="cv",number=10)
 rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
 # run the RFE algorithm
@@ -416,16 +465,18 @@ print(rfe_model)
 predictors(rfe_model)
 # plot the results
 plot(rfe_model, type=c("g", "o"))
- warnings() 
-#Description:
-#ranking features by importance is a technique used to identify the most influential variables in a dataset for predicting a target variable. This process helps in understanding which features have the most impact on the model's performance. By ranking features by importance.
+```
+Description:
+ranking features by importance is a technique used to identify the most influential variables in a dataset for predicting a target variable. This process helps in understanding which features have the most impact on the model's performance. By ranking features by importance.
 
-#removing redundant features refers to the process of eliminating variables or features from a dataset that do not provide any additional or unique information.
+removing redundant features refers to the process of eliminating variables or features from a dataset that do not provide any additional or unique information.
 
 
-#Data transformation
 
-#Normlization
+Data transformation
+
+Normlization
+```{r}
 normalize=function(x){return ((x-min(x))/(max(x)))}
 
 water_potability$Solids=normalize(water_potability$Solids)
@@ -440,20 +491,24 @@ water_potability$Hardness=water_potability$Hardness/1000
 
 water_potability$Hardness<-Z_normalize(Employees$Hardness)
 print(water_potability)
+```
+Description:
+Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=61227.2) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
 
-#Description:
-#Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=61227.2) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
 
-#Discretization:
+
+Discretization:
+```{r}
 water_potability$Trihalomethanes= cut(water_potability$Trihalomethanes, breaks = seq(0,125,by=25),right=FALSE)
 water_potability$Solids= cut(water_potability$Solids, breaks = seq(0,50000,by=10000),right=FALSE)
 water_potability$Organic_carbon= cut(water_potability$Organic_carbon, breaks = seq(0,20,by=5),right=FALSE)
+```
+Description:
+Discretization is the process of transforming continuous variables into discrete or categorical variables. It’s can be useful for analyzing data that has a large number of unique values or when you want to simplify the data.So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
 
-#Description:
-#Discretization is the process of transforming continuous variables into discrete or categorical variables. It’s can be useful for analyzing data that has a large number of unique values or when you want to simplify the data.So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
 
-# Encoding
-#encoding is the process of converting characters or strings into a specific encoding format. Since we don’t have a Nominal  attribute in our database we couldn’t implement it.
+Encoding
+encoding is the process of converting characters or strings into a specific encoding format. Since we don’t have a Nominal  attribute in our database we couldn’t implement it.
 
 
 
