@@ -495,7 +495,7 @@ water_potability$ph=normalize(water_potability$ph)
 water_potability$Chloramines=normalize(water_potability$Chloramines)
 water_potability$Hardness=water_potability$Hardness/1000
 
-water_potability$Hardness<-Z_normalize(Employees$Hardness)
+water_potability$Hardness<-normalize(water_potability$Hardness)
 print(water_potability)
 ```
 Description:
