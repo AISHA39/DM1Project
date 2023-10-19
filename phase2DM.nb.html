@@ -1751,93 +1751,325 @@ display: none;
 </div>
 
 
-<p><code>{r} str(water_potability) summary(water_potability)</code></p>
-<p>#Checking for missing values: dim(water_potability)
-sum(is.na(water_potability))</p>
-<p>#Replace missing Data with average value</p>
-<p>water_potability<span class="math inline">\(Sulfate=
-ifelse(is.na(water_potability\)</span>Sulfate),
-ave(water_potability<span class="math inline">\(Sulfate, FUN
-=function(x) mean(x,na.rm=TRUE)), water_potability\)</span>Sulfate)</p>
-<p>#Standard deviation:</p>
-<p>sd(water_potability<span class="math inline">\(Potability)
-sd(water_potability\)</span>Solids) sd(water_potability<span class="math inline">\(Conductivity)
-sd(water_potability\)</span>Organic_carbon) sd(water_potability$ph)</p>
-<p>#Mean: mean(water_potability<span class="math inline">\(Potability)
-mean(water_potability\)</span>Solids) mean(water_potability<span class="math inline">\(Conductivity)
-mean(water_potability\)</span>Organic_carbon)
-mean(water_potability$ph)</p>
-<p>#Median median(water_potability<span class="math inline">\(Potability)
-median(water_potability\)</span>Solids) median(water_potability<span class="math inline">\(Conductivity)
-median(water_potability\)</span>Organic_carbon)
-median(water_potability$ph)</p>
-<p>#Variance var(water_potability<span class="math inline">\(Potability)
-var(water_potability\)</span>Solids) var(water_potability<span class="math inline">\(Conductivity)
-var(water_potability\)</span>Organic_carbon)
-var(water_potability$ph)</p>
-<p>#Statistical Measures: summary(water_potability<span class="math inline">\(Conductivity)
-summary(water_potability\)</span>Organic_carbon)
-summary(water_potability<span class="math inline">\(Hardness)
-summary(water_potability\)</span>Solids) summary(water_potability<span class="math inline">\(Chloramines)
-///summary(water_potability\)</span>Potability)
-//summary(water_potability<span class="math inline">\(Sulfate)
-//summary(water_potability\)</span>Trihalomethanes)
-//summary(water_potability<span class="math inline">\(Turbidity)
-//summary(water_potability\)</span>ph)</p>
-<p>#outliers</p>
-<p>install.packages(“outliers”) library(outliers)</p>
-<p>OutAge = outlier(water_potability$Conductivity, logical =TRUE)
-sum(OutAge) Find_outlier = which(OutAge ==TRUE, arr.ind = TRUE)</p>
-<p>water_potability= water_potability[-Find_outlier,]</p>
-<p>#Detecting the outliers boxplot.stats(water_potability<span class="math inline">\(Potability)\)</span>out
-boxplot.stats(water_potability<span class="math inline">\(Sulfate)\)</span>out
-boxplot.stats(water_potability<span class="math inline">\(Conductivity)\)</span>out
-boxplot.stats(water_potability<span class="math inline">\(Organic_carbon)\)</span>out
-boxplot.stats(water_potability<span class="math inline">\(ph)\)</span>out</p>
-<p>#Removing the outliers outliers &lt;- boxplot(water_potability<span class="math inline">\(Potability, plot=FALSE)\)</span>out
-water_potability &lt;- water_potability[-which(water_potability<span class="math inline">\(Potability %in% outliers),
-boxplot.stats(water_potability\)</span>Potability)$out</p>
-<p>outliers &lt;- boxplot(water_potability<span class="math inline">\(Sulfate, plot=FALSE)\)</span>out water_potability
-&lt;- water_potability[-which(water_potability<span class="math inline">\(Sulfate %in% outliers),
-boxplot.stats(water_potability\)</span>Sulfate)$out</p>
-<p>outliers &lt;- boxplot(water_potability<span class="math inline">\(Conductivity, plot=FALSE)\)</span>out
-water_potability &lt;- water_potability[-which(water_potability<span class="math inline">\(Conductivity %in% outliers),
-boxplot.stats(water_potability\)</span>Conductivity)$out</p>
-<p>outliers &lt;- boxplot(water_potability<span class="math inline">\(Organic_carbon, plot=FALSE)\)</span>out
-water_potability &lt;- water_potability[-which(water_potability<span class="math inline">\(Organic_carbon %in% outliers),
-boxplot.stats(water_potability\)</span>Organic_carbon)$out</p>
-<p>outliers &lt;- boxplot(water_potability<span class="math inline">\(ph, plot=FALSE)\)</span>out water_potability &lt;-
-water_potability[-which(water_potability<span class="math inline">\(ph
-%in% outliers), boxplot.stats(water_potability\)</span>ph)$out</p>
-<p>#Description:</p>
-<p>#charts</p>
-<p>hist(water_potability<span class="math inline">\(Potability)
-var(water_potability\)</span>ph) //الثالث عند ريم barplot</p>
-<p>#Description:</p>
-<p>#Data transformation</p>
-<p>#Normlization</p>
-<p>water_potability<span class="math inline">\(Hardness=water_potability\)</span>Hardness/1000</p>
-<p>normalize=function(x){return ((x-min(x))/(max(x)))}</p>
-<p>water_potability<span class="math inline">\(Potability=normalize(water_potability\)</span>Potability)
-water_potability<span class="math inline">\(Sulfate=normalize(water_potability\)</span>Sulfate)
-water_potability<span class="math inline">\(Conductivity=normalize(water_potability\)</span>Conductivity)
-water_potability<span class="math inline">\(Organic_carbon=normalize(water_potability\)</span>Organic_carbon)</p>
-<p>#Description:</p>
-<p>#Discretization: water_potability<span class="math inline">\(Trihalomethanes=
-cut(water_potability\)</span>Trihalomethanes, breaks =
-seq(0,125,by=25),right=FALSE)</p>
-<p>#Description:</p>
-<p>install.packages(“caret”) install.packages(“glmnet”)
-install.packages(“Boruta”)</p>
-<p>#Feature selection</p>
-<p>library(caret) library(glmnet) library(Boruta)</p>
-<p>correlation_matrix &lt;- cor(water_potability)
-high_correlation_features &lt;- findCorrelation(correlation_matrix,
-cutoff = 0.5)</p>
-<p><code>{r} plot(cars)</code></p>
-<p>boxplot(Solids ~ Potability, data = water_potability)</p>
+<p>We are collecting a dataset on water quality to train a machine
+learning model for binary classification: determining whether water is
+safe for consumption (1) or not (0). This model will help with water
+treatment decisions and ensure compliance with quality standards. We
+applied different summarization and plotting methods to help us to
+understand our dataset, such as scatter, histogram and bar plot. Then,
+we applyed preprocess in our data using data cleaning, data
+transformation and feature selection.</p>
+<p>```{r} #library: #install.packages(“caret”)
+#install.packages(“glmnet”) #install.packages(“Boruta”)
+#install.packages(“mlbench”) #install.packages(“randomForest”)
+library(outliers) library(dplyr) library(mlbench) library(caret)
+library(glmnet) library(Boruta) library(ggplot2)
+library(randomForest)</p>
+<p>getwd() #setwd(“/Users/mahayie/Desktop/326p”) #getwd()</p>
+<p>water_potability = read.csv(‘water_potability.csv’)</p>
+<p>View(water_potability)</p>
+<p>str(water_potability) summary(water_potability)</p>
+<pre><code>
+Checking for missing values:
+```{r}
+dim(water_potability)
+sum(is.na(water_potability))</code></pre>
+<p>Remove rows with missing values
+<code>{r} water_potability = na.omit(water_potability) View(water_potability)</code></p>
+<p>Description: The absence of data in certain variables or columns in a
+dataset is referred to as missing or null values due to various reasons.
+It can have a negative impact on the dataset’s efficiency and the
+information that can be taken from it later, so we checked to see
+whether our data had missing or null values and eliminated these rows to
+produce a more efficient dataset.</p>
+<p>Standard deviation:
+<code>{r} sd(water_potability$Turbidity) sd(water_potability$Solids) sd(water_potability$Conductivity) sd(water_potability$Organic_carbon) sd(water_potability$ph)</code></p>
+<p>Mean:
+<code>{r} mean(water_potability$Turbidity) mean(water_potability$Solids)  mean(water_potability$Conductivity)  mean(water_potability$Organic_carbon)  mean(water_potability$ph)</code></p>
+<p>Median
+<code>{r} median(water_potability$Turbidity) median(water_potability$Solids) median(water_potability$Conductivity) median(water_potability$Organic_carbon) median(water_potability$ph)</code></p>
+<p>Variance
+<code>{r} var(water_potability$Turbidity) var(water_potability$Solids) var(water_potability$Conductivity) var(water_potability$Organic_carbon) var(water_potability$ph)</code></p>
+<p>Statistical Measures:
+<code>{r} summary(water_potability$Conductivity) summary(water_potability$Organic_carbon) summary(water_potability$Hardness) summary(water_potability$Solids) summary(water_potability$Chloramines) summary(water_potability$Potability) summary(water_potability$Sulfate) summary(water_potability$Trihalomethanes) summary(water_potability$Turbidity) summary(water_potability$ph)</code></p>
+<p>Descriotion: With using minimum, maximum, mean, median laws it helps
+to provide an overview of the data’s key characteristics</p>
+<p>outliers before removing outlier:
+<code>{r} dim(water_potability) head(water_potability)</code></p>
+<p>removing outliers:</p>
+<ul>
+<li>ph ```{r} summary(water_potability<span class="math inline">\(ph)
+quartiles &lt;- quantile(water_potability\)</span>ph, probs = c(.25,
+.75), na.rm = FALSE) quartiles iqr &lt;- IQR(water_potability$ph) iqr
+lower &lt;- quartiles[1] - 1.5<em>iqr lower upper &lt;- quartiles[2] +
+1.5</em>iqr upper</li>
+</ul>
+<p>boxplot(ph ~ Potability, data = water_potability)</p>
+<p>repeat { out_val &lt;- boxplot(water_potability<span class="math inline">\(ph, ylab = &#39;ph&#39;)\)</span>out out_val
+out_rows &lt;- which(water_potability$ph %in% c(out_val)) out_rows</p>
+<p>if(sum(out_rows) &gt; 0) water_potability &lt;-
+water_potability[-out_rows,] else {break} }
+summary(water_potability$ph)</p>
+<p>#——————————————-</p>
+<pre><code>
+-Hardness
+```{r}
+summary(water_potability$Hardness)
+quartiles &lt;- quantile(water_potability$Hardness, probs = c(.25, .75), na.rm = FALSE)
+quartiles
+iqr &lt;- IQR(water_potability$Hardness)
+iqr
+lower &lt;- quartiles[1] - 1.5*iqr
+lower
+upper &lt;- quartiles[2] + 1.5*iqr
+upper
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KYGBge3J9DQpzdHIod2F0ZXJfcG90YWJpbGl0eSkNCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSkNCmBgYA0KDQojQ2hlY2tpbmcgZm9yIG1pc3NpbmcgdmFsdWVzOg0KICBkaW0od2F0ZXJfcG90YWJpbGl0eSkNCiAgc3VtKGlzLm5hKHdhdGVyX3BvdGFiaWxpdHkpKQ0KICANCiAgDQojUmVwbGFjZSBtaXNzaW5nIERhdGEgd2l0aCBhdmVyYWdlIHZhbHVlDQoNCndhdGVyX3BvdGFiaWxpdHkkU3VsZmF0ZT0gaWZlbHNlKGlzLm5hKHdhdGVyX3BvdGFiaWxpdHkkU3VsZmF0ZSksIGF2ZSh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUsIEZVTiA9ZnVuY3Rpb24oeCkNCm1lYW4oeCxuYS5ybT1UUlVFKSksIHdhdGVyX3BvdGFiaWxpdHkkU3VsZmF0ZSkNCg0KICANCiNTdGFuZGFyZCBkZXZpYXRpb246DQoNCnNkKHdhdGVyX3BvdGFiaWxpdHkkUG90YWJpbGl0eSkNCnNkKHdhdGVyX3BvdGFiaWxpdHkkU29saWRzKQ0Kc2Qod2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHkpDQpzZCh3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uKQ0Kc2Qod2F0ZXJfcG90YWJpbGl0eSRwaCkNCg0KI01lYW46DQptZWFuKHdhdGVyX3BvdGFiaWxpdHkkUG90YWJpbGl0eSkNCm1lYW4od2F0ZXJfcG90YWJpbGl0eSRTb2xpZHMpIA0KbWVhbih3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkgDQptZWFuKHdhdGVyX3BvdGFiaWxpdHkkT3JnYW5pY19jYXJib24pIA0KbWVhbih3YXRlcl9wb3RhYmlsaXR5JHBoKSANCg0KI01lZGlhbg0KbWVkaWFuKHdhdGVyX3BvdGFiaWxpdHkkUG90YWJpbGl0eSkNCm1lZGlhbih3YXRlcl9wb3RhYmlsaXR5JFNvbGlkcykNCm1lZGlhbih3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkNCm1lZGlhbih3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uKQ0KbWVkaWFuKHdhdGVyX3BvdGFiaWxpdHkkcGgpDQoNCiNWYXJpYW5jZQ0KdmFyKHdhdGVyX3BvdGFiaWxpdHkkUG90YWJpbGl0eSkNCnZhcih3YXRlcl9wb3RhYmlsaXR5JFNvbGlkcykNCnZhcih3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkNCnZhcih3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uKQ0KdmFyKHdhdGVyX3BvdGFiaWxpdHkkcGgpDQoNCiNTdGF0aXN0aWNhbCBNZWFzdXJlczoNCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHkpDQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkT3JnYW5pY19jYXJib24pDQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkSGFyZG5lc3MpDQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkU29saWRzKQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JENobG9yYW1pbmVzKQ0KLy8vc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFBvdGFiaWxpdHkpDQovL3N1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRTdWxmYXRlKQ0KLy9zdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkVHJpaGFsb21ldGhhbmVzKQ0KLy9zdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkVHVyYmlkaXR5KQ0KLy9zdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkcGgpDQoNCg0KI291dGxpZXJzDQoNCmluc3RhbGwucGFja2FnZXMoIm91dGxpZXJzIikNCmxpYnJhcnkob3V0bGllcnMpDQoNCk91dEFnZSA9IG91dGxpZXIod2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHksIGxvZ2ljYWwgPVRSVUUpDQpzdW0oT3V0QWdlKQ0KRmluZF9vdXRsaWVyID0gd2hpY2goT3V0QWdlID09VFJVRSwgYXJyLmluZCA9IFRSVUUpDQoNCndhdGVyX3BvdGFiaWxpdHk9IHdhdGVyX3BvdGFiaWxpdHlbLUZpbmRfb3V0bGllcixdDQoNCg0KDQoNCg0KDQojRGV0ZWN0aW5nIHRoZSBvdXRsaWVycw0KYm94cGxvdC5zdGF0cyh3YXRlcl9wb3RhYmlsaXR5JFBvdGFiaWxpdHkpJG91dA0KYm94cGxvdC5zdGF0cyh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUpJG91dA0KYm94cGxvdC5zdGF0cyh3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkkb3V0DQpib3hwbG90LnN0YXRzKHdhdGVyX3BvdGFiaWxpdHkkT3JnYW5pY19jYXJib24pJG91dA0KYm94cGxvdC5zdGF0cyh3YXRlcl9wb3RhYmlsaXR5JHBoKSRvdXQNCg0KI1JlbW92aW5nIHRoZSBvdXRsaWVycw0Kb3V0bGllcnMgPC0gYm94cGxvdCh3YXRlcl9wb3RhYmlsaXR5JFBvdGFiaWxpdHksIHBsb3Q9RkFMU0UpJG91dA0Kd2F0ZXJfcG90YWJpbGl0eSA8LSB3YXRlcl9wb3RhYmlsaXR5Wy13aGljaCh3YXRlcl9wb3RhYmlsaXR5JFBvdGFiaWxpdHkgJWluJSBvdXRsaWVycyksDQpib3hwbG90LnN0YXRzKHdhdGVyX3BvdGFiaWxpdHkkUG90YWJpbGl0eSkkb3V0DQoNCm91dGxpZXJzIDwtIGJveHBsb3Qod2F0ZXJfcG90YWJpbGl0eSRTdWxmYXRlLCBwbG90PUZBTFNFKSRvdXQNCndhdGVyX3BvdGFiaWxpdHkgPC0gd2F0ZXJfcG90YWJpbGl0eVstd2hpY2god2F0ZXJfcG90YWJpbGl0eSRTdWxmYXRlICVpbiUgb3V0bGllcnMpLA0KYm94cGxvdC5zdGF0cyh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUpJG91dA0KDQpvdXRsaWVycyA8LSBib3hwbG90KHdhdGVyX3BvdGFiaWxpdHkkQ29uZHVjdGl2aXR5LCBwbG90PUZBTFNFKSRvdXQNCndhdGVyX3BvdGFiaWxpdHkgPC0gd2F0ZXJfcG90YWJpbGl0eVstd2hpY2god2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHkgJWluJSBvdXRsaWVycyksDQpib3hwbG90LnN0YXRzKHdhdGVyX3BvdGFiaWxpdHkkQ29uZHVjdGl2aXR5KSRvdXQNCg0Kb3V0bGllcnMgPC0gYm94cGxvdCh3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uLCBwbG90PUZBTFNFKSRvdXQNCndhdGVyX3BvdGFiaWxpdHkgPC0gd2F0ZXJfcG90YWJpbGl0eVstd2hpY2god2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbiAlaW4lIG91dGxpZXJzKSwNCmJveHBsb3Quc3RhdHMod2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbikkb3V0DQoNCm91dGxpZXJzIDwtIGJveHBsb3Qod2F0ZXJfcG90YWJpbGl0eSRwaCwgcGxvdD1GQUxTRSkkb3V0DQp3YXRlcl9wb3RhYmlsaXR5IDwtIHdhdGVyX3BvdGFiaWxpdHlbLXdoaWNoKHdhdGVyX3BvdGFiaWxpdHkkcGggJWluJSBvdXRsaWVycyksDQpib3hwbG90LnN0YXRzKHdhdGVyX3BvdGFiaWxpdHkkcGgpJG91dA0KDQojRGVzY3JpcHRpb246DQoNCg0KDQojY2hhcnRzDQoNCmhpc3Qod2F0ZXJfcG90YWJpbGl0eSRQb3RhYmlsaXR5KQ0KdmFyKHdhdGVyX3BvdGFiaWxpdHkkcGgpDQovL9in2YTYq9in2YTYqyDYudmG2K8g2LHZitmFIGJhcnBsb3QNCg0KI0Rlc2NyaXB0aW9uOg0KDQoNCiNEYXRhIHRyYW5zZm9ybWF0aW9uDQoNCiNOb3JtbGl6YXRpb24NCg0Kd2F0ZXJfcG90YWJpbGl0eSRIYXJkbmVzcz13YXRlcl9wb3RhYmlsaXR5JEhhcmRuZXNzLzEwMDANCg0Kbm9ybWFsaXplPWZ1bmN0aW9uKHgpe3JldHVybiAoKHgtbWluKHgpKS8obWF4KHgpKSl9DQoNCndhdGVyX3BvdGFiaWxpdHkkUG90YWJpbGl0eT1ub3JtYWxpemUod2F0ZXJfcG90YWJpbGl0eSRQb3RhYmlsaXR5KQ0Kd2F0ZXJfcG90YWJpbGl0eSRTdWxmYXRlPW5vcm1hbGl6ZSh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUpDQp3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eT1ub3JtYWxpemUod2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHkpDQp3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uPW5vcm1hbGl6ZSh3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uKQ0KDQojRGVzY3JpcHRpb246DQoNCg0KI0Rpc2NyZXRpemF0aW9uOg0Kd2F0ZXJfcG90YWJpbGl0eSRUcmloYWxvbWV0aGFuZXM9IGN1dCh3YXRlcl9wb3RhYmlsaXR5JFRyaWhhbG9tZXRoYW5lcywgYnJlYWtzID0gc2VxKDAsMTI1LGJ5PTI1KSxyaWdodD1GQUxTRSkNCg0KDQojRGVzY3JpcHRpb246DQoNCg0KDQppbnN0YWxsLnBhY2thZ2VzKCJjYXJldCIpDQppbnN0YWxsLnBhY2thZ2VzKCJnbG1uZXQiKQ0KaW5zdGFsbC5wYWNrYWdlcygiQm9ydXRhIikNCg0KI0ZlYXR1cmUgc2VsZWN0aW9uDQoNCmxpYnJhcnkoY2FyZXQpDQpsaWJyYXJ5KGdsbW5ldCkNCmxpYnJhcnkoQm9ydXRhKQ0KDQoNCmNvcnJlbGF0aW9uX21hdHJpeCA8LSBjb3Iod2F0ZXJfcG90YWJpbGl0eSkNCmhpZ2hfY29ycmVsYXRpb25fZmVhdHVyZXMgPC0gZmluZENvcnJlbGF0aW9uKGNvcnJlbGF0aW9uX21hdHJpeCwgY3V0b2ZmID0gMC41KQ0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQpgYGB7cn0NCnBsb3QoY2FycykNCmBgYA0KDQoNCg0KDQoNCg0KICANCiAgYm94cGxvdChTb2xpZHMgfiBQb3RhYmlsaXR5LCBkYXRhID0gd2F0ZXJfcG90YWJpbGl0eSkNCg0KDQo=</div>
+boxplot(Hardness ~ Potability, data = water_potability)
+
+repeat {
+  out_val &lt;- boxplot(water_potability$Hardness, ylab = &#39;Hardness&#39;)$out
+  out_val
+  out_rows &lt;- which(water_potability$Hardness %in% c(out_val))
+  out_rows
+
+  if(sum(out_rows) &gt; 0) water_potability &lt;- water_potability[-out_rows,]
+  else {break}
+}
+summary(water_potability$Hardness)
+
+#-------------------------------------------</code></pre>
+<p>-Solids ```{r} summary(water_potability<span class="math inline">\(Solids) quartiles &lt;-
+quantile(water_potability\)</span>Solids, probs = c(.25, .75), na.rm =
+FALSE) quartiles iqr &lt;- IQR(water_potability$Solids) iqr lower &lt;-
+quartiles[1] - 1.5<em>iqr lower upper &lt;- quartiles[2] + 1.5</em>iqr
+upper</p>
+<p>boxplot(Solids ~ Potability, data = water_potability)</p>
+<p>repeat { out_val &lt;- boxplot(water_potability<span class="math inline">\(Solids, ylab = &#39;Solids&#39;)\)</span>out
+out_val out_rows &lt;- which(water_potability$Solids %in% c(out_val))
+out_rows</p>
+<p>if(sum(out_rows) &gt; 0) water_potability &lt;-
+water_potability[-out_rows,] else {break} }
+summary(water_potability$Solids)</p>
+<p>#——————————————-</p>
+<pre><code>
+-Chloramines
+```{r}
+summary(water_potability$Chloramines)
+quartiles &lt;- quantile(water_potability$Chloramines, probs = c(.25, .75), na.rm = FALSE)
+quartiles
+iqr &lt;- IQR(water_potability$Chloramines)
+iqr
+lower &lt;- quartiles[1] - 1.5*iqr
+lower
+upper &lt;- quartiles[2] + 1.5*iqr
+upper
+
+boxplot(Chloramines ~ Potability, data = water_potability)
+
+repeat {
+  out_val &lt;- boxplot(water_potability$Chloramines, ylab = &#39;Chloramines&#39;)$out
+  out_val
+  out_rows &lt;- which(water_potability$Chloramines %in% c(out_val))
+  out_rows
+
+  if(sum(out_rows) &gt; 0) water_potability &lt;- water_potability[-out_rows,]
+  else {break}
+}
+summary(water_potability$Chloramines)
+
+#-------------------------------------------
+</code></pre>
+<p>-Sulfate ```{r} summary(water_potability<span class="math inline">\(Sulfate) quartiles &lt;-
+quantile(water_potability\)</span>Sulfate, probs = c(.25, .75), na.rm =
+FALSE) quartiles iqr &lt;- IQR(water_potability$Sulfate) iqr lower &lt;-
+quartiles[1] - 1.5<em>iqr lower upper &lt;- quartiles[2] + 1.5</em>iqr
+upper</p>
+<p>boxplot(Sulfate ~ Potability, data = water_potability)</p>
+<p>repeat { out_val &lt;- boxplot(water_potability<span class="math inline">\(Sulfate, ylab = &#39;Sulfate&#39;)\)</span>out
+out_val out_rows &lt;- which(water_potability$Sulfate %in% c(out_val))
+out_rows</p>
+<p>if(sum(out_rows) &gt; 0) water_potability &lt;-
+water_potability[-out_rows,] else {break} }
+summary(water_potability$Sulfate)</p>
+<p>#——————————————-</p>
+<pre><code>
+-Conductivity
+```{r}
+summary(water_potability$Conductivity)
+quartiles &lt;- quantile(water_potability$Conductivity, probs = c(.25, .75), na.rm = FALSE)
+quartiles
+iqr &lt;- IQR(water_potability$Conductivity)
+iqr
+lower &lt;- quartiles[1] - 1.5*iqr
+lower
+upper &lt;- quartiles[2] + 1.5*iqr
+upper
+
+boxplot(Conductivity ~ Potability, data = water_potability)
+
+repeat {
+  out_val &lt;- boxplot(water_potability$Conductivity, ylab = &#39;Conductivity&#39;)$out
+  out_val
+  out_rows &lt;- which(water_potability$Conductivity %in% c(out_val))
+  out_rows
+
+  if(sum(out_rows) &gt; 0) water_potability &lt;- water_potability[-out_rows,]
+  else {break}
+}
+summary(water_potability$Conductivity)
+
+#-------------------------------------------</code></pre>
+<p>-Organic_carbon ```{r} summary(water_potability<span class="math inline">\(Organic_carbon) quartiles &lt;-
+quantile(water_potability\)</span>Organic_carbon, probs = c(.25, .75),
+na.rm = FALSE) quartiles iqr &lt;- IQR(water_potability$Organic_carbon)
+iqr lower &lt;- quartiles[1] - 1.5<em>iqr lower upper &lt;- quartiles[2]
++ 1.5</em>iqr upper</p>
+<p>boxplot(Organic_carbon ~ Potability, data = water_potability)</p>
+<p>repeat { out_val &lt;- boxplot(water_potability<span class="math inline">\(Organic_carbon, ylab =
+&#39;Organic_carbon&#39;)\)</span>out out_val out_rows &lt;-
+which(water_potability$Organic_carbon %in% c(out_val)) out_rows</p>
+<p>if(sum(out_rows) &gt; 0) water_potability &lt;-
+water_potability[-out_rows,] else {break} }
+summary(water_potability$Organic_carbon)</p>
+<p>#——————————————-</p>
+<pre><code>
+-Trihalomethanes
+```{r}
+summary(water_potability$Trihalomethanes)
+quartiles &lt;- quantile(water_potability$Trihalomethanes, probs = c(.25, .75), na.rm = FALSE)
+quartiles
+iqr &lt;- IQR(water_potability$Trihalomethanes)
+iqr
+lower &lt;- quartiles[1] - 1.5*iqr
+lower
+upper &lt;- quartiles[2] + 1.5*iqr
+upper
+
+boxplot(Trihalomethanes ~ Potability, data = water_potability)
+
+repeat {
+  out_val &lt;- boxplot(water_potability$Trihalomethanes, ylab = &#39;Trihalomethanes&#39;)$out
+  out_val
+  out_rows &lt;- which(water_potability$Trihalomethanes %in% c(out_val))
+  out_rows
+
+  if(sum(out_rows) &gt; 0) water_potability &lt;- water_potability[-out_rows,]
+  else {break}
+}
+summary(water_potability$Trihalomethanes)
+
+#-------------------------------------------</code></pre>
+<p>-Turbidity ```{r} summary(water_potability<span class="math inline">\(Turbidity) quartiles &lt;-
+quantile(water_potability\)</span>Turbidity, probs = c(.25, .75), na.rm
+= FALSE) quartiles iqr &lt;- IQR(water_potability$Turbidity) iqr lower
+&lt;- quartiles[1] - 1.5<em>iqr lower upper &lt;- quartiles[2] +
+1.5</em>iqr upper</p>
+<p>boxplot(Turbidity ~ Potability, data = water_potability)</p>
+<p>repeat { out_val &lt;- boxplot(water_potability<span class="math inline">\(Turbidity, ylab = &#39;Turbidity&#39;)\)</span>out
+out_val out_rows &lt;- which(water_potability$Turbidity %in% c(out_val))
+out_rows</p>
+<p>if(sum(out_rows) &gt; 0) water_potability &lt;-
+water_potability[-out_rows,] else {break} }
+summary(water_potability$Turbidity)</p>
+<pre><code>
+
+After removing outliers:
+```{r}
+dim(water_potability)
+str(water_potability)
+head(water_potability)</code></pre>
+<p>Description: Removing outliers from a dataset is critical for
+assuring the quality and reliability of statistical analysis and machine
+learning models. We found all outliers in the numerical attributes and
+subsequently eliminated the rows containing the outliers.</p>
+<p>Charts</p>
+<p>Histogram
+<code>{r} hist(water_potability$ph) hist(water_potability$Chloramines) hist(water_potability$Hardness)</code></p>
+<p>Bar Plot ```{r} water_potability$Potability %&gt;% table() %&gt;%
+barplot()</p>
+<pre><code>
+
+
+
+Scatter Plot
+```{r}
+with(water_potability, plot(Trihalomethanes, ph, col = Potability, pch = as.numeric(Potability)))</code></pre>
+<p>Description: -Histogram: The histogram shows the frequency of ph in
+the dataset; we noted that the majority of values fall within the usual
+range, which is about between 6 and 8, but it also shows several
+outliers. -Scatter plot: This scatter demonstrates the correlation and
+proportionality between the two qualities, allowing us to establish
+whether or not turbidity and pH are connected. -Bar Plot the bar plot
+represent how ph levels affect water portability in the dataset it
+indicates that ph level above 10 is not portibal and humans cant consume
+it</p>
+<p>Remove Redundant Features:
+<code>{r} correlation_matrix &lt;- cor(water_potability[,1:9]) high_correlation_features &lt;- findCorrelation(correlation_matrix, cutoff = 0.5) print(high_correlation_features) heatmap(correlation_matrix)</code>
+Description: This will find the correlation between the features and
+represent it in heat map</p>
+<p>Feature selection</p>
+<p>Rank Features By Importance: ```{r} #train random forest model and
+calculate feature importance rf = randomForest(x=
+water_potability[,1:9],y= water_potability[,10]) var_imp &lt;-
+varImp(rf, scale = FALSE) #sort the score in decreasing order var_imp_df
+&lt;- data.frame(cbind(variable = rownames(var_imp), score =
+var_imp[,1])) var_imp_df<span class="math inline">\(score &lt;-
+as.double(var_imp_df\)</span>score)
+var_imp_df[order(var_imp_df$score,decreasing = TRUE),]</p>
+<p>ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
+geom_point() +
+geom_segment(aes(x=variable,xend=variable,y=0,yend=score)) +
+ylab(“IncNodePurity”) + xlab(“Variable Name”) + coord_flip()</p>
+<pre><code>
+Recursive Feature elimination:
+```{r}
+control &lt;- rfeControl(functions=rfFuncs, method=&quot;cv&quot;,number=10)
+rf &lt;- trainControl(method = &quot;cv&quot;, number = 10, verboseIter = FALSE)
+# run the RFE algorithm
+rfe_model &lt;- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
+# summarize the results
+print(rfe_model)
+# list the chosen features
+predictors(rfe_model)
+# plot the results
+plot(rfe_model, type=c(&quot;g&quot;, &quot;o&quot;))</code></pre>
+<p>Description: ranking features by importance is a technique used to
+identify the most influential variables in a dataset for predicting a
+target variable. This process helps in understanding which features have
+the most impact on the model’s performance. By ranking features by
+importance.</p>
+<p>removing redundant features refers to the process of eliminating
+variables or features from a dataset that do not provide any additional
+or unique information.</p>
+<p>Data transformation</p>
+<p>Normlization ```{r} normalize=function(x){return
+((x-min(x))/(max(x)))}</p>
+<p>water_potability<span class="math inline">\(Conductivity=normalize(water_potability\)</span>Conductivity)
+water_potability<span class="math inline">\(Turbidity=normalize(water_potability\)</span>Turbidity)
+water_potability<span class="math inline">\(Chloramines=normalize(water_potability\)</span>Chloramines)
+water_potability<span class="math inline">\(Hardness=water_potability\)</span>Hardness/1000</p>
+<p>print(water_potability)</p>
+<pre><code>Description:
+Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=61227.2) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
+
+
+
+Discretization:
+```{r}
+
+water_potability$Solids= cut(water_potability$Solids, breaks = seq(0,50000,by=10000),right=FALSE)
+water_potability$Organic_carbon= cut(water_potability$Organic_carbon, breaks = seq(0,20,by=5),right=FALSE)</code></pre>
+<p>Description: Discretization is the process of transforming continuous
+variables into discrete or categorical variables. It’s can be useful for
+analyzing data that has a large number of unique values or when you want
+to simplify the data.So In Trihalomethanes we intervals by dividing the
+values by 25 to have a labels with equal width :
+(0,25],(25,50],(50,75],(75,100],(100,125].</p>
+<p>Encoding encoding is the process of converting characters or strings
+into a specific encoding format. Since we don’t have a Nominal attribute
+in our database we couldn’t implement it.</p>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLSANCg0KDQpXZSBhcmUgY29sbGVjdGluZyBhIGRhdGFzZXQgb24gd2F0ZXIgcXVhbGl0eSB0byB0cmFpbiBhIG1hY2hpbmUgbGVhcm5pbmcgbW9kZWwNCmZvciBiaW5hcnkgY2xhc3NpZmljYXRpb246IGRldGVybWluaW5nIHdoZXRoZXIgd2F0ZXIgaXMgc2FmZSBmb3IgY29uc3VtcHRpb24gKDEpDQpvciBub3QgKDApLiBUaGlzIG1vZGVsIHdpbGwgaGVscCB3aXRoIHdhdGVyIHRyZWF0bWVudCBkZWNpc2lvbnMgYW5kIGVuc3VyZQ0KY29tcGxpYW5jZSB3aXRoIHF1YWxpdHkgc3RhbmRhcmRzLg0KV2UgYXBwbGllZCBkaWZmZXJlbnQgc3VtbWFyaXphdGlvbiBhbmQgcGxvdHRpbmcgbWV0aG9kcyB0byBoZWxwIHVzIHRvIHVuZGVyc3RhbmQNCm91ciBkYXRhc2V0LCBzdWNoIGFzIHNjYXR0ZXIsIGhpc3RvZ3JhbSBhbmQgYmFyIHBsb3QuIFRoZW4sIHdlIGFwcGx5ZWQNCnByZXByb2Nlc3MgaW4gb3VyIGRhdGEgdXNpbmcgZGF0YSBjbGVhbmluZywgZGF0YSB0cmFuc2Zvcm1hdGlvbiANCmFuZCBmZWF0dXJlIHNlbGVjdGlvbi4NCg0KYGBge3J9DQojbGlicmFyeToNCiNpbnN0YWxsLnBhY2thZ2VzKCJjYXJldCIpDQojaW5zdGFsbC5wYWNrYWdlcygiZ2xtbmV0IikNCiNpbnN0YWxsLnBhY2thZ2VzKCJCb3J1dGEiKQ0KI2luc3RhbGwucGFja2FnZXMoIm1sYmVuY2giKQ0KI2luc3RhbGwucGFja2FnZXMoInJhbmRvbUZvcmVzdCIpDQpsaWJyYXJ5KG91dGxpZXJzKQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkobWxiZW5jaCkNCmxpYnJhcnkoY2FyZXQpDQpsaWJyYXJ5KGdsbW5ldCkNCmxpYnJhcnkoQm9ydXRhKQ0KbGlicmFyeShnZ3Bsb3QyKQ0KbGlicmFyeShyYW5kb21Gb3Jlc3QpDQoNCmdldHdkKCkNCiNzZXR3ZCgiL1VzZXJzL21haGF5aWUvRGVza3RvcC8zMjZwIikNCiNnZXR3ZCgpDQoNCndhdGVyX3BvdGFiaWxpdHkgPSByZWFkLmNzdignd2F0ZXJfcG90YWJpbGl0eS5jc3YnKQ0KDQpWaWV3KHdhdGVyX3BvdGFiaWxpdHkpDQoNCnN0cih3YXRlcl9wb3RhYmlsaXR5KQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5KQ0KYGBgDQoNCkNoZWNraW5nIGZvciBtaXNzaW5nIHZhbHVlczoNCmBgYHtyfQ0KZGltKHdhdGVyX3BvdGFiaWxpdHkpDQpzdW0oaXMubmEod2F0ZXJfcG90YWJpbGl0eSkpDQpgYGANClJlbW92ZSByb3dzIHdpdGggbWlzc2luZyB2YWx1ZXMNCmBgYHtyfQ0Kd2F0ZXJfcG90YWJpbGl0eSA9IG5hLm9taXQod2F0ZXJfcG90YWJpbGl0eSkNClZpZXcod2F0ZXJfcG90YWJpbGl0eSkNCmBgYA0KDQpEZXNjcmlwdGlvbjoNClRoZSBhYnNlbmNlIG9mIGRhdGEgaW4gY2VydGFpbiB2YXJpYWJsZXMgb3IgY29sdW1ucyBpbiBhIGRhdGFzZXQgaXMgcmVmZXJyZWQgdG8gYXMgbWlzc2luZyBvciBudWxsIHZhbHVlcyBkdWUgdG8gdmFyaW91cyByZWFzb25zLiAgSXQgY2FuIGhhdmUgYSBuZWdhdGl2ZSBpbXBhY3Qgb24gdGhlIGRhdGFzZXQncyBlZmZpY2llbmN5IGFuZCB0aGUgaW5mb3JtYXRpb24gdGhhdCBjYW4gYmUgdGFrZW4gZnJvbSBpdCBsYXRlciwgc28gd2UgY2hlY2tlZCB0byBzZWUgd2hldGhlciBvdXIgZGF0YSBoYWQgbWlzc2luZyBvciBudWxsIHZhbHVlcyBhbmQgZWxpbWluYXRlZCB0aGVzZSByb3dzIHRvIHByb2R1Y2UgYSBtb3JlIGVmZmljaWVudCBkYXRhc2V0Lg0KDQoNClN0YW5kYXJkIGRldmlhdGlvbjoNCmBgYHtyfQ0Kc2Qod2F0ZXJfcG90YWJpbGl0eSRUdXJiaWRpdHkpDQpzZCh3YXRlcl9wb3RhYmlsaXR5JFNvbGlkcykNCnNkKHdhdGVyX3BvdGFiaWxpdHkkQ29uZHVjdGl2aXR5KQ0Kc2Qod2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbikNCnNkKHdhdGVyX3BvdGFiaWxpdHkkcGgpDQpgYGANCg0KTWVhbjoNCmBgYHtyfQ0KbWVhbih3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSkNCm1lYW4od2F0ZXJfcG90YWJpbGl0eSRTb2xpZHMpIA0KbWVhbih3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkgDQptZWFuKHdhdGVyX3BvdGFiaWxpdHkkT3JnYW5pY19jYXJib24pIA0KbWVhbih3YXRlcl9wb3RhYmlsaXR5JHBoKSANCmBgYA0KDQpNZWRpYW4NCmBgYHtyfQ0KbWVkaWFuKHdhdGVyX3BvdGFiaWxpdHkkVHVyYmlkaXR5KQ0KbWVkaWFuKHdhdGVyX3BvdGFiaWxpdHkkU29saWRzKQ0KbWVkaWFuKHdhdGVyX3BvdGFiaWxpdHkkQ29uZHVjdGl2aXR5KQ0KbWVkaWFuKHdhdGVyX3BvdGFiaWxpdHkkT3JnYW5pY19jYXJib24pDQptZWRpYW4od2F0ZXJfcG90YWJpbGl0eSRwaCkNCmBgYA0KDQpWYXJpYW5jZQ0KYGBge3J9DQp2YXIod2F0ZXJfcG90YWJpbGl0eSRUdXJiaWRpdHkpDQp2YXIod2F0ZXJfcG90YWJpbGl0eSRTb2xpZHMpDQp2YXIod2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHkpDQp2YXIod2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbikNCnZhcih3YXRlcl9wb3RhYmlsaXR5JHBoKQ0KYGBgDQoNClN0YXRpc3RpY2FsIE1lYXN1cmVzOg0KYGBge3J9DQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkQ29uZHVjdGl2aXR5KQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uKQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JEhhcmRuZXNzKQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFNvbGlkcykNCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRDaGxvcmFtaW5lcykNCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRQb3RhYmlsaXR5KQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUpDQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkVHJpaGFsb21ldGhhbmVzKQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSkNCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRwaCkNCmBgYA0KDQpEZXNjcmlvdGlvbjoNCldpdGggdXNpbmcgbWluaW11bSwgbWF4aW11bSwgbWVhbiwgbWVkaWFuIGxhd3MgaXQgaGVscHMgdG8gcHJvdmlkZSBhbiBvdmVydmlldyBvZiB0aGUgZGF0YSdzIGtleSBjaGFyYWN0ZXJpc3RpY3MNCg0KDQpvdXRsaWVycw0KYmVmb3JlIHJlbW92aW5nIG91dGxpZXI6DQpgYGB7cn0NCmRpbSh3YXRlcl9wb3RhYmlsaXR5KQ0KaGVhZCh3YXRlcl9wb3RhYmlsaXR5KQ0KYGBgDQoNCnJlbW92aW5nIG91dGxpZXJzOg0KDQotIHBoDQpgYGB7cn0NCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRwaCkNCnF1YXJ0aWxlcyA8LSBxdWFudGlsZSh3YXRlcl9wb3RhYmlsaXR5JHBoLCBwcm9icyA9IGMoLjI1LCAuNzUpLCBuYS5ybSA9IEZBTFNFKQ0KcXVhcnRpbGVzDQppcXIgPC0gSVFSKHdhdGVyX3BvdGFiaWxpdHkkcGgpDQppcXINCmxvd2VyIDwtIHF1YXJ0aWxlc1sxXSAtIDEuNSppcXINCmxvd2VyDQp1cHBlciA8LSBxdWFydGlsZXNbMl0gKyAxLjUqaXFyDQp1cHBlcg0KDQpib3hwbG90KHBoIH4gUG90YWJpbGl0eSwgZGF0YSA9IHdhdGVyX3BvdGFiaWxpdHkpDQoNCnJlcGVhdCB7DQogIG91dF92YWwgPC0gYm94cGxvdCh3YXRlcl9wb3RhYmlsaXR5JHBoLCB5bGFiID0gJ3BoJykkb3V0DQogIG91dF92YWwNCiAgb3V0X3Jvd3MgPC0gd2hpY2god2F0ZXJfcG90YWJpbGl0eSRwaCAlaW4lIGMob3V0X3ZhbCkpDQogIG91dF9yb3dzDQogIA0KICBpZihzdW0ob3V0X3Jvd3MpID4gMCkgd2F0ZXJfcG90YWJpbGl0eSA8LSB3YXRlcl9wb3RhYmlsaXR5Wy1vdXRfcm93cyxdDQogIGVsc2Uge2JyZWFrfQ0KfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JHBoKQ0KDQojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KYGBgDQoNCi1IYXJkbmVzcw0KYGBge3J9DQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkSGFyZG5lc3MpDQpxdWFydGlsZXMgPC0gcXVhbnRpbGUod2F0ZXJfcG90YWJpbGl0eSRIYXJkbmVzcywgcHJvYnMgPSBjKC4yNSwgLjc1KSwgbmEucm0gPSBGQUxTRSkNCnF1YXJ0aWxlcw0KaXFyIDwtIElRUih3YXRlcl9wb3RhYmlsaXR5JEhhcmRuZXNzKQ0KaXFyDQpsb3dlciA8LSBxdWFydGlsZXNbMV0gLSAxLjUqaXFyDQpsb3dlcg0KdXBwZXIgPC0gcXVhcnRpbGVzWzJdICsgMS41Kmlxcg0KdXBwZXINCg0KYm94cGxvdChIYXJkbmVzcyB+IFBvdGFiaWxpdHksIGRhdGEgPSB3YXRlcl9wb3RhYmlsaXR5KQ0KDQpyZXBlYXQgew0KICBvdXRfdmFsIDwtIGJveHBsb3Qod2F0ZXJfcG90YWJpbGl0eSRIYXJkbmVzcywgeWxhYiA9ICdIYXJkbmVzcycpJG91dA0KICBvdXRfdmFsDQogIG91dF9yb3dzIDwtIHdoaWNoKHdhdGVyX3BvdGFiaWxpdHkkSGFyZG5lc3MgJWluJSBjKG91dF92YWwpKQ0KICBvdXRfcm93cw0KDQogIGlmKHN1bShvdXRfcm93cykgPiAwKSB3YXRlcl9wb3RhYmlsaXR5IDwtIHdhdGVyX3BvdGFiaWxpdHlbLW91dF9yb3dzLF0NCiAgZWxzZSB7YnJlYWt9DQp9DQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkSGFyZG5lc3MpDQoNCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpgYGANCg0KLVNvbGlkcw0KYGBge3J9DQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkU29saWRzKQ0KcXVhcnRpbGVzIDwtIHF1YW50aWxlKHdhdGVyX3BvdGFiaWxpdHkkU29saWRzLCBwcm9icyA9IGMoLjI1LCAuNzUpLCBuYS5ybSA9IEZBTFNFKQ0KcXVhcnRpbGVzDQppcXIgPC0gSVFSKHdhdGVyX3BvdGFiaWxpdHkkU29saWRzKQ0KaXFyDQpsb3dlciA8LSBxdWFydGlsZXNbMV0gLSAxLjUqaXFyDQpsb3dlcg0KdXBwZXIgPC0gcXVhcnRpbGVzWzJdICsgMS41Kmlxcg0KdXBwZXINCg0KYm94cGxvdChTb2xpZHMgfiBQb3RhYmlsaXR5LCBkYXRhID0gd2F0ZXJfcG90YWJpbGl0eSkNCg0KcmVwZWF0IHsNCiAgb3V0X3ZhbCA8LSBib3hwbG90KHdhdGVyX3BvdGFiaWxpdHkkU29saWRzLCB5bGFiID0gJ1NvbGlkcycpJG91dA0KICBvdXRfdmFsDQogIG91dF9yb3dzIDwtIHdoaWNoKHdhdGVyX3BvdGFiaWxpdHkkU29saWRzICVpbiUgYyhvdXRfdmFsKSkNCiAgb3V0X3Jvd3MNCg0KICBpZihzdW0ob3V0X3Jvd3MpID4gMCkgd2F0ZXJfcG90YWJpbGl0eSA8LSB3YXRlcl9wb3RhYmlsaXR5Wy1vdXRfcm93cyxdDQogIGVsc2Uge2JyZWFrfQ0KfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFNvbGlkcykNCg0KIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCmBgYA0KDQotQ2hsb3JhbWluZXMNCmBgYHtyfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JENobG9yYW1pbmVzKQ0KcXVhcnRpbGVzIDwtIHF1YW50aWxlKHdhdGVyX3BvdGFiaWxpdHkkQ2hsb3JhbWluZXMsIHByb2JzID0gYyguMjUsIC43NSksIG5hLnJtID0gRkFMU0UpDQpxdWFydGlsZXMNCmlxciA8LSBJUVIod2F0ZXJfcG90YWJpbGl0eSRDaGxvcmFtaW5lcykNCmlxcg0KbG93ZXIgPC0gcXVhcnRpbGVzWzFdIC0gMS41Kmlxcg0KbG93ZXINCnVwcGVyIDwtIHF1YXJ0aWxlc1syXSArIDEuNSppcXINCnVwcGVyDQoNCmJveHBsb3QoQ2hsb3JhbWluZXMgfiBQb3RhYmlsaXR5LCBkYXRhID0gd2F0ZXJfcG90YWJpbGl0eSkNCg0KcmVwZWF0IHsNCiAgb3V0X3ZhbCA8LSBib3hwbG90KHdhdGVyX3BvdGFiaWxpdHkkQ2hsb3JhbWluZXMsIHlsYWIgPSAnQ2hsb3JhbWluZXMnKSRvdXQNCiAgb3V0X3ZhbA0KICBvdXRfcm93cyA8LSB3aGljaCh3YXRlcl9wb3RhYmlsaXR5JENobG9yYW1pbmVzICVpbiUgYyhvdXRfdmFsKSkNCiAgb3V0X3Jvd3MNCg0KICBpZihzdW0ob3V0X3Jvd3MpID4gMCkgd2F0ZXJfcG90YWJpbGl0eSA8LSB3YXRlcl9wb3RhYmlsaXR5Wy1vdXRfcm93cyxdDQogIGVsc2Uge2JyZWFrfQ0KfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JENobG9yYW1pbmVzKQ0KDQojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpgYGANCg0KLVN1bGZhdGUNCmBgYHtyfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUpDQpxdWFydGlsZXMgPC0gcXVhbnRpbGUod2F0ZXJfcG90YWJpbGl0eSRTdWxmYXRlLCBwcm9icyA9IGMoLjI1LCAuNzUpLCBuYS5ybSA9IEZBTFNFKQ0KcXVhcnRpbGVzDQppcXIgPC0gSVFSKHdhdGVyX3BvdGFiaWxpdHkkU3VsZmF0ZSkNCmlxcg0KbG93ZXIgPC0gcXVhcnRpbGVzWzFdIC0gMS41Kmlxcg0KbG93ZXINCnVwcGVyIDwtIHF1YXJ0aWxlc1syXSArIDEuNSppcXINCnVwcGVyDQoNCmJveHBsb3QoU3VsZmF0ZSB+IFBvdGFiaWxpdHksIGRhdGEgPSB3YXRlcl9wb3RhYmlsaXR5KQ0KDQpyZXBlYXQgew0KICBvdXRfdmFsIDwtIGJveHBsb3Qod2F0ZXJfcG90YWJpbGl0eSRTdWxmYXRlLCB5bGFiID0gJ1N1bGZhdGUnKSRvdXQNCiAgb3V0X3ZhbA0KICBvdXRfcm93cyA8LSB3aGljaCh3YXRlcl9wb3RhYmlsaXR5JFN1bGZhdGUgJWluJSBjKG91dF92YWwpKQ0KICBvdXRfcm93cw0KDQogIGlmKHN1bShvdXRfcm93cykgPiAwKSB3YXRlcl9wb3RhYmlsaXR5IDwtIHdhdGVyX3BvdGFiaWxpdHlbLW91dF9yb3dzLF0NCiAgZWxzZSB7YnJlYWt9DQp9DQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkU3VsZmF0ZSkNCg0KIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KYGBgDQoNCi1Db25kdWN0aXZpdHkNCmBgYHtyfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkNCnF1YXJ0aWxlcyA8LSBxdWFudGlsZSh3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSwgcHJvYnMgPSBjKC4yNSwgLjc1KSwgbmEucm0gPSBGQUxTRSkNCnF1YXJ0aWxlcw0KaXFyIDwtIElRUih3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkNCmlxcg0KbG93ZXIgPC0gcXVhcnRpbGVzWzFdIC0gMS41Kmlxcg0KbG93ZXINCnVwcGVyIDwtIHF1YXJ0aWxlc1syXSArIDEuNSppcXINCnVwcGVyDQoNCmJveHBsb3QoQ29uZHVjdGl2aXR5IH4gUG90YWJpbGl0eSwgZGF0YSA9IHdhdGVyX3BvdGFiaWxpdHkpDQoNCnJlcGVhdCB7DQogIG91dF92YWwgPC0gYm94cGxvdCh3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSwgeWxhYiA9ICdDb25kdWN0aXZpdHknKSRvdXQNCiAgb3V0X3ZhbA0KICBvdXRfcm93cyA8LSB3aGljaCh3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSAlaW4lIGMob3V0X3ZhbCkpDQogIG91dF9yb3dzDQoNCiAgaWYoc3VtKG91dF9yb3dzKSA+IDApIHdhdGVyX3BvdGFiaWxpdHkgPC0gd2F0ZXJfcG90YWJpbGl0eVstb3V0X3Jvd3MsXQ0KICBlbHNlIHticmVha30NCn0NCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRDb25kdWN0aXZpdHkpDQoNCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpgYGANCg0KLU9yZ2FuaWNfY2FyYm9uDQpgYGB7cn0NCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbikNCnF1YXJ0aWxlcyA8LSBxdWFudGlsZSh3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uLCBwcm9icyA9IGMoLjI1LCAuNzUpLCBuYS5ybSA9IEZBTFNFKQ0KcXVhcnRpbGVzDQppcXIgPC0gSVFSKHdhdGVyX3BvdGFiaWxpdHkkT3JnYW5pY19jYXJib24pDQppcXINCmxvd2VyIDwtIHF1YXJ0aWxlc1sxXSAtIDEuNSppcXINCmxvd2VyDQp1cHBlciA8LSBxdWFydGlsZXNbMl0gKyAxLjUqaXFyDQp1cHBlcg0KDQpib3hwbG90KE9yZ2FuaWNfY2FyYm9uIH4gUG90YWJpbGl0eSwgZGF0YSA9IHdhdGVyX3BvdGFiaWxpdHkpDQoNCnJlcGVhdCB7DQogIG91dF92YWwgPC0gYm94cGxvdCh3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uLCB5bGFiID0gJ09yZ2FuaWNfY2FyYm9uJykkb3V0DQogIG91dF92YWwNCiAgb3V0X3Jvd3MgPC0gd2hpY2god2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbiAlaW4lIGMob3V0X3ZhbCkpDQogIG91dF9yb3dzDQoNCiAgaWYoc3VtKG91dF9yb3dzKSA+IDApIHdhdGVyX3BvdGFiaWxpdHkgPC0gd2F0ZXJfcG90YWJpbGl0eVstb3V0X3Jvd3MsXQ0KICBlbHNlIHticmVha30NCn0NCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbikNCg0KIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCmBgYA0KDQotVHJpaGFsb21ldGhhbmVzDQpgYGB7cn0NCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRUcmloYWxvbWV0aGFuZXMpDQpxdWFydGlsZXMgPC0gcXVhbnRpbGUod2F0ZXJfcG90YWJpbGl0eSRUcmloYWxvbWV0aGFuZXMsIHByb2JzID0gYyguMjUsIC43NSksIG5hLnJtID0gRkFMU0UpDQpxdWFydGlsZXMNCmlxciA8LSBJUVIod2F0ZXJfcG90YWJpbGl0eSRUcmloYWxvbWV0aGFuZXMpDQppcXINCmxvd2VyIDwtIHF1YXJ0aWxlc1sxXSAtIDEuNSppcXINCmxvd2VyDQp1cHBlciA8LSBxdWFydGlsZXNbMl0gKyAxLjUqaXFyDQp1cHBlcg0KDQpib3hwbG90KFRyaWhhbG9tZXRoYW5lcyB+IFBvdGFiaWxpdHksIGRhdGEgPSB3YXRlcl9wb3RhYmlsaXR5KQ0KDQpyZXBlYXQgew0KICBvdXRfdmFsIDwtIGJveHBsb3Qod2F0ZXJfcG90YWJpbGl0eSRUcmloYWxvbWV0aGFuZXMsIHlsYWIgPSAnVHJpaGFsb21ldGhhbmVzJykkb3V0DQogIG91dF92YWwNCiAgb3V0X3Jvd3MgPC0gd2hpY2god2F0ZXJfcG90YWJpbGl0eSRUcmloYWxvbWV0aGFuZXMgJWluJSBjKG91dF92YWwpKQ0KICBvdXRfcm93cw0KDQogIGlmKHN1bShvdXRfcm93cykgPiAwKSB3YXRlcl9wb3RhYmlsaXR5IDwtIHdhdGVyX3BvdGFiaWxpdHlbLW91dF9yb3dzLF0NCiAgZWxzZSB7YnJlYWt9DQp9DQpzdW1tYXJ5KHdhdGVyX3BvdGFiaWxpdHkkVHJpaGFsb21ldGhhbmVzKQ0KDQojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KYGBgDQoNCi1UdXJiaWRpdHkNCmBgYHtyfQ0Kc3VtbWFyeSh3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSkNCnF1YXJ0aWxlcyA8LSBxdWFudGlsZSh3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSwgcHJvYnMgPSBjKC4yNSwgLjc1KSwgbmEucm0gPSBGQUxTRSkNCnF1YXJ0aWxlcw0KaXFyIDwtIElRUih3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSkNCmlxcg0KbG93ZXIgPC0gcXVhcnRpbGVzWzFdIC0gMS41Kmlxcg0KbG93ZXINCnVwcGVyIDwtIHF1YXJ0aWxlc1syXSArIDEuNSppcXINCnVwcGVyDQoNCmJveHBsb3QoVHVyYmlkaXR5IH4gUG90YWJpbGl0eSwgZGF0YSA9IHdhdGVyX3BvdGFiaWxpdHkpDQoNCnJlcGVhdCB7DQogIG91dF92YWwgPC0gYm94cGxvdCh3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSwgeWxhYiA9ICdUdXJiaWRpdHknKSRvdXQNCiAgb3V0X3ZhbA0KICBvdXRfcm93cyA8LSB3aGljaCh3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSAlaW4lIGMob3V0X3ZhbCkpDQogIG91dF9yb3dzDQoNCiAgaWYoc3VtKG91dF9yb3dzKSA+IDApIHdhdGVyX3BvdGFiaWxpdHkgPC0gd2F0ZXJfcG90YWJpbGl0eVstb3V0X3Jvd3MsXQ0KICBlbHNlIHticmVha30NCn0NCnN1bW1hcnkod2F0ZXJfcG90YWJpbGl0eSRUdXJiaWRpdHkpDQpgYGANCg0KDQpBZnRlciByZW1vdmluZyBvdXRsaWVyczoNCmBgYHtyfQ0KZGltKHdhdGVyX3BvdGFiaWxpdHkpDQpzdHIod2F0ZXJfcG90YWJpbGl0eSkNCmhlYWQod2F0ZXJfcG90YWJpbGl0eSkNCmBgYA0KDQpEZXNjcmlwdGlvbjoNClJlbW92aW5nIG91dGxpZXJzIGZyb20gYSBkYXRhc2V0IGlzIGNyaXRpY2FsIGZvciBhc3N1cmluZyB0aGUgcXVhbGl0eSBhbmQgcmVsaWFiaWxpdHkgb2Ygc3RhdGlzdGljYWwgYW5hbHlzaXMgYW5kIG1hY2hpbmUgbGVhcm5pbmcgbW9kZWxzLiBXZSBmb3VuZCBhbGwgb3V0bGllcnMgaW4gdGhlIG51bWVyaWNhbCBhdHRyaWJ1dGVzIGFuZCBzdWJzZXF1ZW50bHkgZWxpbWluYXRlZCB0aGUgcm93cyBjb250YWluaW5nIHRoZSBvdXRsaWVycy4gDQoNCg0KDQpDaGFydHMNCg0KSGlzdG9ncmFtDQpgYGB7cn0NCmhpc3Qod2F0ZXJfcG90YWJpbGl0eSRwaCkNCmhpc3Qod2F0ZXJfcG90YWJpbGl0eSRDaGxvcmFtaW5lcykNCmhpc3Qod2F0ZXJfcG90YWJpbGl0eSRIYXJkbmVzcykNCmBgYA0KDQpCYXIgUGxvdA0KYGBge3J9DQp3YXRlcl9wb3RhYmlsaXR5JFBvdGFiaWxpdHkgJT4lIHRhYmxlKCkgJT4lIGJhcnBsb3QoKQ0KDQoNCg0KYGBgDQoNCg0KDQoNClNjYXR0ZXIgUGxvdA0KYGBge3J9DQp3aXRoKHdhdGVyX3BvdGFiaWxpdHksIHBsb3QoVHJpaGFsb21ldGhhbmVzLCBwaCwgY29sID0gUG90YWJpbGl0eSwgcGNoID0gYXMubnVtZXJpYyhQb3RhYmlsaXR5KSkpDQpgYGANCiANCkRlc2NyaXB0aW9uOg0KLUhpc3RvZ3JhbToNCiAgVGhlIGhpc3RvZ3JhbSBzaG93cyB0aGUgZnJlcXVlbmN5IG9mIHBoIGluIHRoZSBkYXRhc2V0OyB3ZSBub3RlZCB0aGF0IHRoZSBtYWpvcml0eSBvZiB2YWx1ZXMgZmFsbCAgICB3aXRoaW4gdGhlIHVzdWFsIHJhbmdlLCB3aGljaCBpcyBhYm91dCBiZXR3ZWVuIDYgYW5kIDgsIGJ1dCBpdCBhbHNvIHNob3dzIHNldmVyYWwgb3V0bGllcnMuDQotU2NhdHRlciBwbG90Og0KICBUaGlzIHNjYXR0ZXIgZGVtb25zdHJhdGVzIHRoZSBjb3JyZWxhdGlvbiBhbmQgcHJvcG9ydGlvbmFsaXR5IGJldHdlZW4gdGhlIHR3byBxdWFsaXRpZXMsIGFsbG93aW5nICAgIHVzIHRvIGVzdGFibGlzaCB3aGV0aGVyIG9yIG5vdCB0dXJiaWRpdHkgYW5kIHBIIGFyZSBjb25uZWN0ZWQuDQotQmFyIFBsb3QNCiAgdGhlIGJhciBwbG90IHJlcHJlc2VudCBob3cgcGggbGV2ZWxzIGFmZmVjdCB3YXRlciBwb3J0YWJpbGl0eSBpbiB0aGUgZGF0YXNldCBpdCBpbmRpY2F0ZXMgdGhhdCBwaCAgICBsZXZlbCBhYm92ZSAxMCBpcyBub3QgcG9ydGliYWwgYW5kIGh1bWFucyBjYW50IGNvbnN1bWUgaXQgDQoNCg0KDQpSZW1vdmUgUmVkdW5kYW50IEZlYXR1cmVzOg0KYGBge3J9DQpjb3JyZWxhdGlvbl9tYXRyaXggPC0gY29yKHdhdGVyX3BvdGFiaWxpdHlbLDE6OV0pDQpoaWdoX2NvcnJlbGF0aW9uX2ZlYXR1cmVzIDwtIGZpbmRDb3JyZWxhdGlvbihjb3JyZWxhdGlvbl9tYXRyaXgsIGN1dG9mZiA9IDAuNSkNCnByaW50KGhpZ2hfY29ycmVsYXRpb25fZmVhdHVyZXMpDQpoZWF0bWFwKGNvcnJlbGF0aW9uX21hdHJpeCkNCmBgYA0KRGVzY3JpcHRpb246DQpUaGlzIHdpbGwgZmluZCB0aGUgY29ycmVsYXRpb24gYmV0d2VlbiB0aGUgZmVhdHVyZXMgYW5kIHJlcHJlc2VudCBpdCBpbiBoZWF0IG1hcA0KDQoNCg0KRmVhdHVyZSBzZWxlY3Rpb24NCg0KUmFuayBGZWF0dXJlcyBCeSBJbXBvcnRhbmNlOg0KYGBge3J9DQojdHJhaW4gcmFuZG9tIGZvcmVzdCBtb2RlbCBhbmQgY2FsY3VsYXRlIGZlYXR1cmUgaW1wb3J0YW5jZQ0KcmYgPSByYW5kb21Gb3Jlc3QoeD0gd2F0ZXJfcG90YWJpbGl0eVssMTo5XSx5PSB3YXRlcl9wb3RhYmlsaXR5WywxMF0pDQp2YXJfaW1wIDwtIHZhckltcChyZiwgc2NhbGUgPSBGQUxTRSkNCiNzb3J0IHRoZSBzY29yZSBpbiBkZWNyZWFzaW5nIG9yZGVyDQp2YXJfaW1wX2RmIDwtIGRhdGEuZnJhbWUoY2JpbmQodmFyaWFibGUgPSByb3duYW1lcyh2YXJfaW1wKSwgc2NvcmUgPSB2YXJfaW1wWywxXSkpDQp2YXJfaW1wX2RmJHNjb3JlIDwtIGFzLmRvdWJsZSh2YXJfaW1wX2RmJHNjb3JlKQ0KdmFyX2ltcF9kZltvcmRlcih2YXJfaW1wX2RmJHNjb3JlLGRlY3JlYXNpbmcgPSBUUlVFKSxdDQoNCmdncGxvdCh2YXJfaW1wX2RmLCBhZXMoeD1yZW9yZGVyKHZhcmlhYmxlLCBzY29yZSksIHk9c2NvcmUpKSArIA0KICBnZW9tX3BvaW50KCkgKw0KICBnZW9tX3NlZ21lbnQoYWVzKHg9dmFyaWFibGUseGVuZD12YXJpYWJsZSx5PTAseWVuZD1zY29yZSkpICsNCiAgeWxhYigiSW5jTm9kZVB1cml0eSIpICsNCiAgeGxhYigiVmFyaWFibGUgTmFtZSIpICsNCiAgY29vcmRfZmxpcCgpDQpgYGANCg0KUmVjdXJzaXZlIEZlYXR1cmUgZWxpbWluYXRpb246DQpgYGB7cn0NCmNvbnRyb2wgPC0gcmZlQ29udHJvbChmdW5jdGlvbnM9cmZGdW5jcywgbWV0aG9kPSJjdiIsbnVtYmVyPTEwKQ0KcmYgPC0gdHJhaW5Db250cm9sKG1ldGhvZCA9ICJjdiIsIG51bWJlciA9IDEwLCB2ZXJib3NlSXRlciA9IEZBTFNFKQ0KIyBydW4gdGhlIFJGRSBhbGdvcml0aG0NCnJmZV9tb2RlbCA8LSByZmUoeD0gd2F0ZXJfcG90YWJpbGl0eVssMTo5XSx5PSB3YXRlcl9wb3RhYmlsaXR5WywxMF0sIHNpemVzPWMoMTo5KSwgcmZlQ29udHJvbD1jb250cm9sKQ0KIyBzdW1tYXJpemUgdGhlIHJlc3VsdHMNCnByaW50KHJmZV9tb2RlbCkNCiMgbGlzdCB0aGUgY2hvc2VuIGZlYXR1cmVzDQpwcmVkaWN0b3JzKHJmZV9tb2RlbCkNCiMgcGxvdCB0aGUgcmVzdWx0cw0KcGxvdChyZmVfbW9kZWwsIHR5cGU9YygiZyIsICJvIikpDQpgYGANCkRlc2NyaXB0aW9uOg0KcmFua2luZyBmZWF0dXJlcyBieSBpbXBvcnRhbmNlIGlzIGEgdGVjaG5pcXVlIHVzZWQgdG8gaWRlbnRpZnkgdGhlIG1vc3QgaW5mbHVlbnRpYWwgdmFyaWFibGVzIGluIGEgZGF0YXNldCBmb3IgcHJlZGljdGluZyBhIHRhcmdldCB2YXJpYWJsZS4gVGhpcyBwcm9jZXNzIGhlbHBzIGluIHVuZGVyc3RhbmRpbmcgd2hpY2ggZmVhdHVyZXMgaGF2ZSB0aGUgbW9zdCBpbXBhY3Qgb24gdGhlIG1vZGVsJ3MgcGVyZm9ybWFuY2UuIEJ5IHJhbmtpbmcgZmVhdHVyZXMgYnkgaW1wb3J0YW5jZS4NCg0KcmVtb3ZpbmcgcmVkdW5kYW50IGZlYXR1cmVzIHJlZmVycyB0byB0aGUgcHJvY2VzcyBvZiBlbGltaW5hdGluZyB2YXJpYWJsZXMgb3IgZmVhdHVyZXMgZnJvbSBhIGRhdGFzZXQgdGhhdCBkbyBub3QgcHJvdmlkZSBhbnkgYWRkaXRpb25hbCBvciB1bmlxdWXCoGluZm9ybWF0aW9uLg0KDQoNCg0KRGF0YSB0cmFuc2Zvcm1hdGlvbg0KDQpOb3JtbGl6YXRpb24NCmBgYHtyfQ0Kbm9ybWFsaXplPWZ1bmN0aW9uKHgpe3JldHVybiAoKHgtbWluKHgpKS8obWF4KHgpKSl9DQoNCndhdGVyX3BvdGFiaWxpdHkkQ29uZHVjdGl2aXR5PW5vcm1hbGl6ZSh3YXRlcl9wb3RhYmlsaXR5JENvbmR1Y3Rpdml0eSkNCndhdGVyX3BvdGFiaWxpdHkkVHVyYmlkaXR5PW5vcm1hbGl6ZSh3YXRlcl9wb3RhYmlsaXR5JFR1cmJpZGl0eSkNCndhdGVyX3BvdGFiaWxpdHkkQ2hsb3JhbWluZXM9bm9ybWFsaXplKHdhdGVyX3BvdGFiaWxpdHkkQ2hsb3JhbWluZXMpDQp3YXRlcl9wb3RhYmlsaXR5JEhhcmRuZXNzPXdhdGVyX3BvdGFiaWxpdHkkSGFyZG5lc3MvMTAwMA0KDQpwcmludCh3YXRlcl9wb3RhYmlsaXR5KQ0KYGBgDQpEZXNjcmlwdGlvbjoNCk5vcm1hbGl6YXRpb24gcmVmZXJzIHRvIHRoZSBwcm9jZXNzIG9mIHNjYWxpbmcgdmFyaWFibGVzIHRvIGhhdmUgYSBjb21tb24gcmFuZ2UuIEl0IGhlbHBzIGluIGNvbXBhcmluZyB2YXJpYWJsZXMgd2l0aCBkaWZmZXJlbnQgc2NhbGVzLiBJbiB0aGUgc29saWRzIGF0dHJpYnV0ZSB3aWxsIGNyZWF0ZSBjcml0aWNhbCBjaGFsbGVuZ2VzIHNpbmNlIG9mIHRoZSBodWdlIGFuZCBkaXZlcnRlZCB2YWx1ZXMobWluPTMyMCw5IG1heD02MTIyNy4yKSBzbyB3ZSBub3JtYWxpemVkIHRoZSBzb2xpZHMgdG8gbWFrZSB2YWx1ZXMgc21hbGxlciBhbmQgbW9yZSByZWFzb25hYmxlLiBBbHNvIHdlIG5vcm1hbGl6ZWQgYWxsIHRoZSBzY2FsZWQgYXR0cmlidXRlczpTdWxmYXRlLENvbmR1Y3Rpdml0eSxPcmdhbmljX2NvcmJvbiwgVHJpaGFsb21lcmhhbmVzLCBUdXJiaWRpdHkscGgsQ2hsb3JhbWluZXMuDQoNCg0KDQpEaXNjcmV0aXphdGlvbjoNCmBgYHtyfQ0KDQp3YXRlcl9wb3RhYmlsaXR5JFNvbGlkcz0gY3V0KHdhdGVyX3BvdGFiaWxpdHkkU29saWRzLCBicmVha3MgPSBzZXEoMCw1MDAwMCxieT0xMDAwMCkscmlnaHQ9RkFMU0UpDQp3YXRlcl9wb3RhYmlsaXR5JE9yZ2FuaWNfY2FyYm9uPSBjdXQod2F0ZXJfcG90YWJpbGl0eSRPcmdhbmljX2NhcmJvbiwgYnJlYWtzID0gc2VxKDAsMjAsYnk9NSkscmlnaHQ9RkFMU0UpDQpgYGANCkRlc2NyaXB0aW9uOg0KRGlzY3JldGl6YXRpb24gaXMgdGhlIHByb2Nlc3Mgb2YgdHJhbnNmb3JtaW5nIGNvbnRpbnVvdXMgdmFyaWFibGVzIGludG8gZGlzY3JldGUgb3IgY2F0ZWdvcmljYWwgdmFyaWFibGVzLiBJdOKAmXMgY2FuIGJlIHVzZWZ1bCBmb3IgYW5hbHl6aW5nIGRhdGEgdGhhdCBoYXMgYSBsYXJnZSBudW1iZXIgb2YgdW5pcXVlIHZhbHVlcyBvciB3aGVuIHlvdSB3YW50IHRvIHNpbXBsaWZ5IHRoZSBkYXRhLlNvIEluIFRyaWhhbG9tZXRoYW5lcyB3ZSBpbnRlcnZhbHMgYnkgZGl2aWRpbmcgdGhlIHZhbHVlcyBieSAyNSB0byBoYXZlIGEgbGFiZWxzIHdpdGggZXF1YWwgd2lkdGggOiAoMCwyNV0sKDI1LDUwXSwoNTAsNzVdLCg3NSwxMDBdLCgxMDAsMTI1XS4NCg0KDQpFbmNvZGluZw0KZW5jb2RpbmcgaXMgdGhlIHByb2Nlc3Mgb2YgY29udmVydGluZyBjaGFyYWN0ZXJzIG9yIHN0cmluZ3MgaW50byBhIHNwZWNpZmljIGVuY29kaW5nIGZvcm1hdC4gU2luY2Ugd2UgZG9u4oCZdCBoYXZlIGEgTm9taW5hbCAgYXR0cmlidXRlIGluIG91ciBkYXRhYmFzZSB3ZSBjb3VsZG7igJl0IGltcGxlbWVudCBpdC4NCg0KDQoNCg0K</div>
 
 
 
