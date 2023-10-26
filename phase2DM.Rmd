@@ -442,7 +442,7 @@ This will find the correlation between the features and represent it in heat map
 Feature selection
 
 Rank Features By Importance:
-```{r}
+```{r, warning=FALSE}
 #train random forest model and calculate feature importance
 rf = randomForest(x= water_potability[,1:9],y= water_potability[,10])
 var_imp <- varImp(rf, scale = FALSE)
@@ -460,7 +460,7 @@ ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
 ```
 
 Recursive Feature elimination:
-```{r}
+```{r, warning=FALSE}
 control <- rfeControl(functions=rfFuncs, method="cv",number=10)
 rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
 # run the RFE algorithm
@@ -484,27 +484,32 @@ Data transformation
 Normlization
 ```{r}
 normalize=function(x){return ((x-min(x))/(max(x)))}
+w = water_potability
 
 water_potability$Sulfate=normalize(water_potability$Sulfate)
 water_potability$Conductivity=normalize(water_potability$Conductivity)
 water_potability$Turbidity=normalize(water_potability$Turbidity)
 water_potability$ph=normalize(water_potability$ph)
 water_potability$Chloramines=normalize(water_potability$Chloramines)
+water_potability$Solids=normalize(water_potability$Solids)
+water_potability$Trihalomethanes=normalize(water_potability$Trihalomethanes)
+water_potability$Organic_carbon=normalize(water_potability$Organic_carbon)
 water_potability$Hardness=water_potability$Hardness/1000
 
 water_potability$Hardness<-normalize(water_potability$Hardness)
 print(water_potability)
 ```
 Description:
-Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=61227.2) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
+Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=43195.5) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
 
 
 
 Discretization:
 ```{r}
-water_potability$Trihalomethanes= cut(water_potability$Trihalomethanes, breaks = seq(0,125,by=25),right=FALSE)
-water_potability$Solids= cut(water_potability$Solids, breaks = seq(0,50000,by=10000),right=FALSE)
-water_potability$Organic_carbon= cut(water_potability$Organic_carbon, breaks = seq(0,20,by=5),right=FALSE)
+w$Trihalomethanes= cut(w$Trihalomethanes, breaks = seq(0,125,by=25),right=FALSE)
+w$Solids= cut(w$Solids, breaks = seq(0,50000,by=10000),right=FALSE)
+w$Organic_carbon= cut(w$Organic_carbon, breaks = seq(0,25,by=5),right=FALSE)
+print(w)
 ```
 Description:
 Discretization is the process of transforming continuous variables into discrete or categorical variables. It’s can be useful for analyzing data that has a large number of unique values or when you want to simplify the data.So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
