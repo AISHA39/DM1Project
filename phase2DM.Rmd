@@ -391,25 +391,27 @@ Histogram
 hist(water_potability$ph)
 hist(water_potability$Chloramines)
 hist(water_potability$Hardness)
+hist(water_potability$Solids)
+hist(water_potability$Sulfate)
+hist(water_potability$Conductivity)
+hist(water_potability$Organic_carbon)
+hist(water_potability$Trihalomethanes)
+hist(water_potability$Turbidity)
 ```
 
 Bar Plot
 ```{r}
-water_potability$Potability %>% table() %>% barplot()
-
-# add colors
+tab <- water_potability$Potability %>% table()
+txt <- paste0(tab) 
 bb <- water_potability$ph %>% table() %>% barplot( main='ph',col=c('pink'))
+bb <- water_potability$Potability %>% table() %>% barplot( main='Potability',ylab='Frequency',col=c('pink', 'lightblue'))
+text(bb, tab/2, labels=txt, cex=1)
 
 ```
 
 Pie chart
 ```{r}
-water_potability$Potability %>% table() %>% pie() # plot pie chart without percentages
-
-tab <- water_potability$Potability %>% table()
-precentages <- tab %>% prop.table() %>% round(3)*100
-txt <- paste0(names(c("Not Potable","Potable")),'\n',precentages,'%')
-pie(tab,labels = c("Not potabale","Potabale"))
+water_potability$Potability %>% table() %>% pie()
 ```
 
 Scatter Plot
@@ -512,7 +514,7 @@ w$Organic_carbon= cut(w$Organic_carbon, breaks = seq(0,25,by=5),right=FALSE)
 print(w)
 ```
 Description:
-Discretization is the process of transforming continuous variables into discrete or categorical variables. It’s can be useful for analyzing data that has a large number of unique values or when you want to simplify the data.So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
+Discretization is the process of transforming continuous variables into discrete or categorical variables. It’s can be useful for analyzing data that has a large number of unique values or when you want to simplify the data. So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
 
 
 Encoding
