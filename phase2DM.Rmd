@@ -1059,7 +1059,7 @@ cat("AUC:", auc(roc_curve), "\n")
 view data
 ```{r}
 View(water_potability)
-data("water_potability")
+#data("water_potability")
 summary(water_potability)
 str(water_potability)
 ```
@@ -1304,7 +1304,7 @@ fviz_cluster(hc3.cut, ellipse.type= "convex")
 
 ```{r}
  #average silhouette for each clusters 
-install.packages(cluster)
+#install.packages(cluster)
 library(cluster)
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
@@ -1478,5 +1478,4 @@ for (k in 2:5) {
   total_withinss <- kmeans_result$tot.withinss
   cat("Total Within-Cluster Sum of Squares for k =", k, ":", total_withinss, "\n")
 }
-
-
+```
