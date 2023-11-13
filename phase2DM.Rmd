@@ -28,6 +28,16 @@ library(glmnet)
 library(Boruta)
 library(ggplot2)
 library(randomForest)
+library(pROC)
+library(e1071)
+library(caret)
+library(party)
+library(partykit)
+library(RWeka)
+library(C50)
+library(printr)
+library(rpart)
+library(rpart.plot)
 
 getwd()
 #setwd("/Users/mahayie/Desktop/326p")
@@ -40,7 +50,6 @@ View(water_potability)
 str(water_potability)
 summary(water_potability)
 ```
-
 Checking for missing values:
 ```{r}
 dim(water_potability)
@@ -48,10 +57,12 @@ sum(is.na(water_potability))
 ```
 Remove rows with missing values
 ```{r}
+colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
+
+colSums(is.na(water_potability))
 View(water_potability)
 ```
-
 Description:
 The absence of data in certain variables or columns in a dataset is referred to as missing or null values due to various reasons.  It can have a negative impact on the dataset's efficiency and the information that can be taken from it later, so we checked to see whether our data had missing or null values and eliminated these rows to produce a more efficient dataset.
 
@@ -109,13 +120,30 @@ summary(water_potability$ph)
 Descriotion:
 With using minimum, maximum, mean, median laws it helps to provide an overview of the data's key characteristics
 
+Data Transformation:
+```{r}
+water_potability$Potability[water_potability$Potability == '0'] <- 'Not Potable'
+water_potability$Potability[water_potability$Potability == '1'] <- 'Potable'
 
-outliers
+water_potability$Potability <- as.factor(water_potability$Potability)
+table(water_potability$Potability)
+```
+```{r}
+print(water_potability)
+```
+Description:
+This step involved transforming the class label, Potability, into categorical data. We changed the numeric data to 'Not Potable' and 'Potable' to indicate whether the water is safe for human consumption, where 1 represents 'Potable', and 0 represents 'Not Potable'.
+
+
+Outliers
 before removing outlier:
 ```{r}
 dim(water_potability)
+```
+```{r}
 head(water_potability)
 ```
+
 
 removing outliers:
 
@@ -143,7 +171,6 @@ repeat {
   else {break}
 }
 summary(water_potability$ph)
-
 #-------------------------------------------
 ```
 
@@ -375,12 +402,25 @@ summary(water_potability$Turbidity)
 After removing outliers:
 ```{r}
 dim(water_potability)
+```
+
+
+```{r}
+summary(water_potability)
+```
+
+
+```{r}
 str(water_potability)
+```
+
+
+```{r}
 head(water_potability)
 ```
 
 Description:
-Removing outliers from a dataset is critical for assuring the quality and reliability of statistical analysis and machine learning models. We found all outliers in the numerical attributes and subsequently eliminated the rows containing the outliers. 
+Removing outliers from a dataset is critical for assuring the quality and reliability of statistical analysis and machine learning models. To produce a more accurate dataset that would help obtain more precise results later, we took the following steps to handle outliers in the numeric attributes. Firstly, we identified all the outliers. Secondly, we deleted the rows containing the outliers. Finally, we conducted a second check to ensure all outliers were deleted. Any new outliers due to the IQR change after deleting rows in the second step were also eliminated.
 
 
 
@@ -475,51 +515,417 @@ predictors(rfe_model)
 plot(rfe_model, type=c("g", "o"))
 ```
 Description:
-ranking features by importance is a technique used to identify the most influential variables in a dataset for predicting a target variable. This process helps in understanding which features have the most impact on the model's performance. By ranking features by importance.
+Ranking features by importance is a technique used to identify the most influential variables in a dataset for predicting a target variable. This process helps understand which features impact the model's performance most by ranking features by importance.
 
-removing redundant features refers to the process of eliminating variables or features from a dataset that do not provide any additional or unique information.
+Removing redundant features means eliminating variables or features from a dataset that do not provide additional or unique information.
 
 
 
 Data transformation
 
+Discretization:
+```{r}
+wp<- water_potability
+wp$ph= cut(wp$ph, breaks = seq(3,11,by=4),right=FALSE)
+wp$Hardness= cut(wp$Hardness, breaks = seq(120,280,by=40),right=FALSE)
+wp$Chloramines = cut(wp$Chloramines, breaks = seq(3,11,by=4),right = FALSE)
+wp$Sulfate= cut(wp$Sulfate, breaks = seq(220,440,by=44),right=FALSE)
+wp$Conductivity= cut(wp$Conductivity, breaks = seq(200,700,by=100),right=FALSE)
+wp$Organic_carbon= cut(wp$Organic_carbon, breaks = seq(4,24,by=4),right=FALSE)
+wp$Trihalomethanes= cut(wp$Trihalomethanes, breaks = seq(20,110,by=10),right=FALSE)
+wp$Turbidity= cut(wp$Turbidity, breaks = seq(1,7,by=2),right=FALSE)
+
+print(wp)
+```
+Description:
+Discretization is the process of transforming continuous variables into discrete or categorical variables. It can be useful for analyzing data with many unique values or simplifying it. Therefore, we transformed the continuous values of the numeric attributes into intervals by dividing the values to fall on one of the possible interval labels by discretization. The values will be meaningful and simpler to classify or perform other methods to help us later in our model. So, In Trihalomethanes, we intervals by dividing the values by 10 to have labels with equal width : [20,30) [30,40) [40,50) [50,60) [60,70) [70,80) [80,90) [90,100) [100,110).
+
+
 Normlization
 ```{r}
 normalize=function(x){return ((x-min(x))/(max(x)))}
-w = water_potability
-
-water_potability$Sulfate=normalize(water_potability$Sulfate)
-water_potability$Conductivity=normalize(water_potability$Conductivity)
-water_potability$Turbidity=normalize(water_potability$Turbidity)
-water_potability$ph=normalize(water_potability$ph)
-water_potability$Chloramines=normalize(water_potability$Chloramines)
-water_potability$Solids=normalize(water_potability$Solids)
-water_potability$Trihalomethanes=normalize(water_potability$Trihalomethanes)
-water_potability$Organic_carbon=normalize(water_potability$Organic_carbon)
-water_potability$Hardness=water_potability$Hardness/1000
-
-water_potability$Hardness<-normalize(water_potability$Hardness)
-print(water_potability)
+wp$Solids=normalize(wp$Solids)
 ```
 Description:
-Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=43195.5) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
-
-
-
-Discretization:
-```{r}
-w$Trihalomethanes= cut(w$Trihalomethanes, breaks = seq(0,125,by=25),right=FALSE)
-w$Solids= cut(w$Solids, breaks = seq(0,50000,by=10000),right=FALSE)
-w$Organic_carbon= cut(w$Organic_carbon, breaks = seq(0,25,by=5),right=FALSE)
-print(w)
-```
-Description:
-Discretization is the process of transforming continuous variables into discrete or categorical variables. It’s can be useful for analyzing data that has a large number of unique values or when you want to simplify the data. So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
+Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales. The solids attribute will create critical challenges because of the vast and diverted values: min is 320.9, and max is 43195.5, so we normalized the solids between 0 and 1 to make values smaller and more reasonable.
 
 
 Encoding
-encoding is the process of converting characters or strings into a specific encoding format. Since we don’t have a Nominal  attribute in our database we couldn’t implement it.
+
+Description:
+Encoding is converting characters or strings into a specific encoding format. We could not implement it since our database does not have a Nominal attribute.
+
+```{r}
+wp
+```
 
 
+Information gain (ID3)
+Splitting the data set into two subsets: Training(70%) and Testing(30%):
+```{r}
+set.seed(1958)
+ind <- sample(2, nrow(wp), replace = TRUE, prob = c(0.7, 0.3))
+train.data <- wp[ind == 1, ]
+test.data <- wp[ind == 2, ]
+train.data$Potability <- as.factor(train.data$Potability)
+test.data$Potability <- as.factor(test.data$Potability)
+
+
+myFormula <- Potability ~ ph+Hardness+Solids+Chloramines+Sulfate+Conductivity+Organic_carbon+Trihalomethanes+Turbidity
+#myFormula <- Potability ~ ph+Hardness+Solids+Chloramines+Sulfate
+
+
+m.ctree <- ctree(myFormula, data = train.data)
+table(predict(m.ctree), train.data$Potability)
+
+print(m.ctree)
+plot(m.ctree, type="simple")
+
+testPred <- predict(m.ctree, newdata = test.data)
+result<-table(testPred, test.data$Potability)
+
+
+co_result <- confusionMatrix(result)
+print(co_result)
+as.matrix(co_result, what = "classes")
+acc <- co_result$overall["Accuracy"]
+acc*100
+
+
+pred_probs <- as.numeric(predict(m.ctree, newdata = test.data, type = "response"))
+binary_outcome <- as.numeric(test.data$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+Splitting the data set into two subsets: Training(80%) and Testing(20%):
+```{r}
+
+set.seed(1958)
+ind <- sample(2, nrow(wp), replace = TRUE, prob = c(0.8, 0.2))
+train.data <- wp[ind == 1, ]
+test.data <- wp[ind == 2, ]
+train.data$Potability <- as.factor(train.data$Potability)
+
+myFormula <- Potability ~ ph+Hardness+Solids+Chloramines+Sulfate+Conductivity+Organic_carbon+Trihalomethanes+Turbidity
+#myFormula <- Potability ~ ph+Hardness+Solids+Chloramines+Sulfate
+
+
+m.ctree <- ctree(myFormula, data = train.data)
+table(predict(m.ctree), train.data$Potability)
+
+print(m.ctree)
+plot(m.ctree, type="simple")
+
+testPred <- predict(m.ctree, newdata = test.data)
+result<-table(testPred, test.data$Potability)
+
+
+co_result <- confusionMatrix(result)
+print(co_result)
+as.matrix(co_result, what = "classes")
+acc <- co_result$overall["Accuracy"]
+acc*100
+
+pred_probs <- as.numeric(predict(m.ctree, newdata = test.data, type = "response"))
+binary_outcome <- as.numeric(test.data$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+Splitting the data set into two subsets: Training(90%) and Testing(10%):
+```{r}
+set.seed(1958)
+ind <- sample(2, nrow(wp), replace = TRUE, prob = c(0.9, 0.1))
+train.data <- wp[ind == 1, ]
+test.data <- wp[ind == 2, ]
+train.data$Potability <- as.factor(train.data$Potability)
+
+myFormula <- Potability ~ ph+Hardness+Solids+Chloramines+Sulfate+Conductivity+Organic_carbon+Trihalomethanes+Turbidity
+#myFormula <- Potability ~ ph+Hardness+Solids+Chloramines+Sulfate
+
+
+m.ctree <- ctree(myFormula, data = train.data)
+table(predict(m.ctree), train.data$Potability)
+
+print(m.ctree)
+plot(m.ctree, type="simple")
+
+testPred <- predict(m.ctree, newdata = test.data)
+result<-table(testPred, test.data$Potability)
+
+
+co_result <- confusionMatrix(result)
+print(co_result)
+as.matrix(co_result, what = "classes")
+acc <- co_result$overall["Accuracy"]
+acc*100
+
+pred_probs <- as.numeric(predict(m.ctree, newdata = test.data, type = "response"))
+binary_outcome <- as.numeric(test.data$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+Gain ratio (C4.5)
+
+```{r}
+# 3 folds
+set.seed(1958)
+train <- createFolds(wp$Potability, k=3)
+C45Fit <- train(Potability ~ .,method = "J48",data = wp,
+                trControl = trainControl(
+                method = "cv",
+                index = train,
+                savePredictions = TRUE))
+
+C45Fit
+
+C45Fit$finalModel
+
+pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(wp$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+```{r}
+# 5 folds
+set.seed(1958)
+train <- createFolds(wp$Potability, k=5)
+C45Fit <- train(Potability ~., method="J48", data=wp,
+                trControl = trainControl(
+                method ="cv", 
+                index = train,
+                savePredictions = TRUE))
+
+C45Fit
+
+C45Fit$finalModel
+
+pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(wp$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+
+```
+
+```{r}
+# 10 folds
+set.seed(1958)
+train <- createFolds(wp$Potability, k=10)
+C45Fit <- train(Potability ~., method="J48", data=wp,
+                trControl = trainControl(
+                  method="cv", indexOut=train))
+
+C45Fit
+
+C45Fit$finalModel
+
+pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(wp$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+
+```
+
+
+Gini index (CART)
+Splitting the data set into two subsets: Training(70%) and Testing(30%):
+```{r}
+set.seed(1958)
+train = sample(2, nrow(wp), replace=TRUE, prob=c(0.7, 0.3))
+wp.train=wp[train == 1,]
+wp.test=wp[train == 2,]
+
+
+
+fit.tree = rpart(Potability ~ ., data=wp, method = "class", cp=0.008)
+fit.tree
+
+rpart.plot(fit.tree)
+
+fit.tree$variable.importance
+
+pred.tree = predict(fit.tree, wp.test, type = "class")
+re <- table(pred.tree, wp.test$Potability)
+
+co_re <- confusionMatrix(re)
+print(co_re)
+as.matrix(co_re, what = "classes")
+acc <- co_re$overall["Accuracy"]
+acc*100
+
+plotcp(fit.tree)
+printcp(fit.tree)
+
+# Explicitly request the lowest cp value
+fit.tree$cptable[which.min(fit.tree$cptable[,"xerror"]),"CP"]
+
+bestcp <-fit.tree$cptable[which.min(fit.tree$cptable[,"xerror"]),"CP"]
+pruned.tree <- prune(fit.tree, cp = bestcp)
+rpart.plot(pruned.tree)
+
+pred.prune = predict(pruned.tree, wp.test, type="class")
+
+re <- table(pred.prune, wp.test$Potability)
+
+co_re <- confusionMatrix(re)
+print(co_re)
+as.matrix(co_re, what = "classes")
+acc <- co_re$overall["Accuracy"]
+acc*100
+
+
+
+pred.tree_raw <- predict(fit.tree, wp.test)
+# Convert to probabilities
+pred.tree_probs <- exp(pred.tree_raw) / (1 + exp(pred.tree_raw))
+# Extract probabilities for the "Potable" class
+roc_curve <- roc(ifelse(wp.test$Potability == "Potable", 1, 0), pred.tree_probs[, "Potable"])
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+
+
+```
+
+Splitting the data set into two subsets: Training(80%) and Testing(20%):
+```{r}
+set.seed(1958)
+train = sample(2, nrow(wp), replace=TRUE, prob=c(0.8, 0.2))
+wp.train=wp[train == 1,]
+wp.test=wp[train == 2,]
+
+
+
+fit.tree = rpart(Potability ~ ., data=wp.train, method = "class", cp=0.008)
+fit.tree
+
+rpart.plot(fit.tree)
+
+fit.tree$variable.importance
+
+pred.tree = predict(fit.tree, wp.test, type = "class")
+re <- table(pred.tree, wp.test$Potability)
+
+co_re <- confusionMatrix(re)
+print(co_re)
+as.matrix(co_re, what = "classes")
+acc <- co_re$overall["Accuracy"]
+acc*100
+
+plotcp(fit.tree)
+printcp(fit.tree)
+
+# Explicitly request the lowest cp value
+fit.tree$cptable[which.min(fit.tree$cptable[,"xerror"]),"CP"]
+
+bestcp <-fit.tree$cptable[which.min(fit.tree$cptable[,"xerror"]),"CP"]
+pruned.tree <- prune(fit.tree, cp = bestcp)
+rpart.plot(pruned.tree)
+
+pred.prune = predict(pruned.tree, wp.test, type="class")
+
+re <- table(pred.prune, wp.test$Potability)
+
+co_re <- confusionMatrix(re)
+print(co_re)
+as.matrix(co_re, what = "classes")
+acc <- co_re$overall["Accuracy"]
+acc*100
+
+
+pred.tree_raw <- predict(fit.tree, wp.test)
+pred.tree_probs <- exp(pred.tree_raw) / (1 + exp(pred.tree_raw))
+roc_curve <- roc(ifelse(wp.test$Potability == "Potable", 1, 0), pred.tree_probs[, "Potable"])
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+
+
+```
+
+Splitting the data set into two subsets: Training(90%) and Testing(10%):
+```{r}
+set.seed(1958)
+train = sample(2, nrow(wp), replace=TRUE, prob=c(0.9, 0.1))
+wp.train=wp[train == 1,]
+wp.test=wp[train == 2,]
+
+
+
+fit.tree = rpart(Potability ~ ., data=wp.train, method = "class", cp=0.008)
+fit.tree
+
+rpart.plot(fit.tree)
+
+fit.tree$variable.importance
+
+pred.tree = predict(fit.tree, wp.test, type = "class")
+re <- table(pred.tree, wp.test$Potability)
+
+co_re <- confusionMatrix(re)
+print(co_re)
+as.matrix(co_re, what = "classes")
+acc <- co_re$overall["Accuracy"]
+acc*100
+
+plotcp(fit.tree)
+printcp(fit.tree)
+
+# Explicitly request the lowest cp value
+fit.tree$cptable[which.min(fit.tree$cptable[,"xerror"]),"CP"]
+
+bestcp <-fit.tree$cptable[which.min(fit.tree$cptable[,"xerror"]),"CP"]
+pruned.tree <- prune(fit.tree, cp = bestcp)
+rpart.plot(pruned.tree)
+
+pred.prune = predict(pruned.tree, wp.test, type="class")
+
+re <- table(pred.prune, wp.test$Potability)
+
+co_re <- confusionMatrix(re)
+print(co_re)
+as.matrix(co_re, what = "classes")
+acc <- co_re$overall["Accuracy"]
+acc*100
+
+
+
+pred.tree_raw <- predict(fit.tree, wp.test)
+pred.tree_probs <- exp(pred.tree_raw) / (1 + exp(pred.tree_raw))
+roc_curve <- roc(ifelse(wp.test$Potability == "Potable", 1, 0), pred.tree_probs[, "Potable"])
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
 
 
