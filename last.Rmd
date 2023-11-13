@@ -21,8 +21,7 @@ Kaggle
 
 ### link of the dataset:
 
-<a href='https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability'>Water Quality and Potability
-</a>
+<a href='https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability'>Water Quality and Potability</a>
 
 
 # library:
@@ -1642,7 +1641,7 @@ elbow method helps find the optimal number of clusters (k) in k-means clustering
 
 ```{r}
 # 3- Elbow method
-#fviz_nbclust() with within cluster sums of squares (wss) method
+#fviz_nbclust() with within cluster sums of squares (wss) method 
  
 fviz_nbclust(data_for_cluster, kmeans, method = "wss") +
   geom_vline(xintercept = 5, linetype = 2)+
