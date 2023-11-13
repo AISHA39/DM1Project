@@ -24,38 +24,6 @@ Kaggle
 <https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability>
 
 
-### sample of data
-
-sample of raw dataset(first 10 rows):
-```{r}
-head(water_potability, 10)
-```
-
-sample of raw dataset(last 10 rows):
-```{r}
-tail(water_potability, 10)
-```
-
-Five number summary of each attribute in our dataset:
-```{r}
-summary(water_potability)
-```
-
-### Number of column and rows
-
-```{r}
-dim(water_potability)
-```
-
-#### Sample of Water_potability dataset
-
-This is a sample of the dataset to help to understand how it is structured and organized
-
-```{r}
-View(water_potability)
-sample(water_potability)
-```
-
 # library:
 ```{r}
 #install.packages("caret")
@@ -86,13 +54,45 @@ getwd()
 #setwd("/Users/mahayie/Desktop/326p")
 #getwd()
 
-water_potability = read.csv('water_potability.csv')
-
-View(water_potability)
+water_potability = read.csv('Dataset/water_potability.csv')
 
 str(water_potability)
+```
+
+
+### sample of data
+
+sample of raw dataset(first 10 rows):
+```{r}
+
+head(water_potability,10)
+```
+
+sample of raw dataset(last 10 rows):
+```{r}
+tail(water_potability, 10)
+```
+
+Five number summary of each attribute in our dataset:
+```{r}
 summary(water_potability)
 ```
+
+### Number of column and rows
+
+```{r}
+dim(water_potability)
+```
+
+#### Sample of Water_potability dataset
+
+This is a sample of the dataset to help to understand how it is structured and organized
+
+```{r}
+View(water_potability)
+sample(water_potability)
+```
+
 
 ### Checking for missing values:
 
@@ -108,9 +108,12 @@ sum(is.na(water_potability))
 ### Remove rows with missing values
 
 ```{r}
-olSums(is.na(water_potability))
+colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
+```
 
+
+```{r}
 colSums(is.na(water_potability))
 View(water_potability)
 ```
@@ -504,6 +507,12 @@ The histogram shows the frequency of ph in the dataset; we noted that the majori
 hist(water_potability$ph)
 hist(water_potability$Chloramines)
 hist(water_potability$Hardness)
+hist(water_potability$Solids)
+hist(water_potability$Sulfate)
+hist(water_potability$Conductivity)
+hist(water_potability$Organic_carbon)
+hist(water_potability$Trihalomethanes)
+hist(water_potability$Turbidity)
 ```
 
 ### Bar Plot
@@ -511,7 +520,11 @@ hist(water_potability$Hardness)
 the bar plot represent how ph levels affect water portability in the dataset it indicates that ph level above 10 is not portibal and humans cant consume it
 
 ```{r}
-water_potability$Potability %>% table() %>% barplot()
+tab <- water_potability$Potability %>% table()
+txt <- paste0(tab) 
+bb <- water_potability$ph %>% table() %>% barplot( main='ph',col=c('pink'))
+bb <- water_potability$Potability %>% table() %>% barplot( main='Potability',ylab='Frequency',col=c('pink', 'lightblue'))
+text(bb, tab/2, labels=txt, cex=1)
 
 ```
 
@@ -546,45 +559,13 @@ Ranking features by importance is a technique used to identify the most influent
 
 Removing redundant features means eliminating variables or features from a dataset that do not provide additional or unique information.
 
-```{r}
-Rank Features By Importance:
-{r, warning=FALSE}
-#train random forest model and calculate feature importance
-rf = randomForest(x= water_potability[,1:9],y= water_potability[,10])
-var_imp <- varImp(rf, scale = FALSE)
-#sort the score in decreasing order
-var_imp_df <- data.frame(cbind(variable = rownames(var_imp), score = var_imp[,1]))
-var_imp_df$score <- as.double(var_imp_df$score)
-var_imp_df[order(var_imp_df$score,decreasing = TRUE),]
 
-ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) + 
-  geom_point() +
-  geom_segment(aes(x=variable,xend=variable,y=0,yend=score)) +
-  ylab("IncNodePurity") +
-  xlab("Variable Name") +
-  coord_flip()
-
-
-Recursive Feature elimination:
-
-r, warning=FALSE}
-control <- rfeControl(functions=rfFuncs, method="cv",number=10)
-rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
-# run the RFE algorithm
-rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
-# summarize the results
-print(rfe_model)
-# list the chosen features
-predictors(rfe_model)
-# plot the results
-plot(rfe_model, type=c("g", "o"))
-```
 
 ### Rank Features By Importance:
 
 ranking features by importance is a technique used to identify the most influential variables in a dataset for predicting a target variable. This process helps in understanding which features have the most impact on the model's performance. By ranking features by importance.
 
-```{r}
+```{r, warning=FALSE}
 #train random forest model and calculate feature importance
 rf = randomForest(x= water_potability[,1:9],y= water_potability[,10])
 var_imp <- varImp(rf, scale = FALSE)
@@ -605,18 +586,18 @@ ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
 
 is a feature selection technique that recursively removes less important features from a model until the optimal subset is identified. It involves repeatedly training the model, ranking features based on their importance, and eliminating the least important ones.
 
-```{r}
-control <- rfeControl(functions=rfFuncs, method="cv",number=10)
-rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
-# run the RFE algorithm
-rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
-# summarize the results
-print(rfe_model)
-# list the chosen features
-predictors(rfe_model)
-# plot the results
-plot(rfe_model, type=c("g", "o"))
-```
+# ```{r, warning=FALSE}
+# control <- rfeControl(functions=rfFuncs, method="cv",number=10)
+# rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
+# # run the RFE algorithm
+# rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
+# # summarize the results
+# print(rfe_model)
+# # list the chosen features
+# predictors(rfe_model)
+# # plot the results
+# plot(rfe_model, type=c("g", "o"))
+# ```
 
 ### Data transformation:
 
@@ -627,29 +608,32 @@ the process of converting or modifying raw data into a different format or struc
 Normalization refers to the process of scaling variables to have a common range. It helps in comparing variables with different scales.
 
 ```{r}
+wp<- water_potability
 normalize=function(x){return ((x-min(x))/(max(x)))}
-
-water_potability$Conductivity=normalize(water_potability$Conductivity)
-water_potability$Turbidity=normalize(water_potability$Turbidity)
-water_potability$Chloramines=normalize(water_potability$Chloramines)
-water_potability$Hardness=water_potability$Hardness/1000
-
-print(water_potability)
+wp$Solids=normalize(wp$Solids)
 ```
 
-In the solids attribute will create critical challenges since of the huge and diverted values(min=320,9 max=61227.2) so we normalized the solids to make values smaller and more reasonable. Also we normalized all the scaled attributes:Sulfate,Conductivity,Organic_corbon, Trihalomerhanes, Turbidity,ph,Chloramines.
+The solids attribute will create critical challenges because of the vast and diverted values: min is 320.9, and max is 43195.5, so we normalized the solids between 0 and 1 to make values smaller and more reasonable.
 
 ### Discretization:
 
-is the process of transforming continuous variables into discrete or categorical variables. It's can be useful for analyzing data that has a large number of unique values or when you want to simplify the data.
+Discretization is the process of transforming continuous variables into discrete or categorical variables. It can be useful for analyzing data with many unique values or simplifying it.
 
 ```{r}
 
-water_potability$Solids= cut(water_potability$Solids, breaks = seq(0,50000,by=10000),right=FALSE)
-water_potability$Organic_carbon= cut(water_potability$Organic_carbon, breaks = seq(0,20,by=5),right=FALSE)
+wp$ph= cut(wp$ph, breaks = seq(3,11,by=4),right=FALSE)
+wp$Hardness= cut(wp$Hardness, breaks = seq(120,280,by=40),right=FALSE)
+wp$Chloramines = cut(wp$Chloramines, breaks = seq(3,11,by=4),right = FALSE)
+wp$Sulfate= cut(wp$Sulfate, breaks = seq(220,440,by=44),right=FALSE)
+wp$Conductivity= cut(wp$Conductivity, breaks = seq(200,700,by=100),right=FALSE)
+wp$Organic_carbon= cut(wp$Organic_carbon, breaks = seq(4,24,by=4),right=FALSE)
+wp$Trihalomethanes= cut(wp$Trihalomethanes, breaks = seq(20,110,by=10),right=FALSE)
+wp$Turbidity= cut(wp$Turbidity, breaks = seq(1,7,by=2),right=FALSE)
+
+print(wp)
 ```
 
-So In Trihalomethanes we intervals by dividing the values by 25 to have a labels with equal width : (0,25],(25,50],(50,75],(75,100],(100,125].
+Therefore, we transformed the continuous values of the numeric attributes into intervals by dividing the values to fall on one of the possible interval labels by discretization. The values will be meaningful and simpler to classify or perform other methods to help us later in our model. So, In Trihalomethanes, we intervals by dividing the values by 10 to have labels with equal width : [20,30) [30,40) [40,50) [50,60) [60,70) [70,80) [80,90) [90,100) [100,110).
 
 ### ##Encoding
 
@@ -1181,7 +1165,7 @@ cat("AUC:", auc(roc_curve), "\n")
 
 |            |Information Gain:               |Gain Ratio:                     | Gini index:                      |
 |------------|--------------------------------|--------------------------------|----------------------------------|
-| Accuracy   | 58.20611                       | 0.9686781                      | 59.35115                         |
+| Accuracy   | 0.5820611                      | 0.9686781                      | 0.5935115                        |
 | precision  | 0.58546169                     | 0.005417132                    | 0.6004320                        |   
 | sensitivity| 0.97385621                     | 0.9334741                      | 0.9084967                        |    
 | specificity| 0.03211009                     | 0.880677                       | 0.1513761                        |              
@@ -1190,8 +1174,6 @@ As shown in the comparison the best technique to choose is Gain Raio Due to the 
 
 
 ```{r}
-View(water_potability)
-data("water_potability")
 summary(water_potability)
 str(water_potability)
 ```
@@ -1233,8 +1215,6 @@ kmeans.result
 
 ```{r}
 # visualize clustering (2 clusters)
-install.packages("factoextra")
-library(factoextra)
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1268,8 +1248,7 @@ This method calculates the average silhouette width for different values of k, d
 
 ```{r}
  #average silhouette for each clusters 
-install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1345,8 +1324,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (3 clusters)
-install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1378,8 +1356,7 @@ This method calculates the average silhouette width for different values of k, d
 
 ```{r}
  #average silhouette for each clusters 
-install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1455,8 +1432,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (4 clusters)
-install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1488,8 +1464,7 @@ This method calculates the average silhouette width for different values of k, d
 
 ```{r}
  #average silhouette for each clusters 
-install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1564,8 +1539,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (5 clusters)
-install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1597,8 +1571,7 @@ This method calculates the average silhouette width for different values of k, d
 
 ```{r}
  #average silhouette for each clusters 
-install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1664,8 +1637,7 @@ elbow method helps find the optimal number of clusters (k) in k-means clustering
 ```{r}
 # 3- Elbow method
 #fviz_nbclust() with within cluster sums of squares (wss) method
-install.packages(factoextra)
-library(factoextra) 
+ 
 fviz_nbclust(data_for_cluster, kmeans, method = "wss") +
   geom_vline(xintercept = 4, linetype = 2)+
   labs(subtitle = "Elbow method")
@@ -1688,7 +1660,7 @@ for (k in 2:5) {
 ### Comparison Criteria:
 
 |                          | Clustring1 | Clustring2  | Clustring3  | Clustring4  |
-|---------------|---------------|---------------|---------------|---------------|
+|--------------------------|------------|-------------|-------------|-------------|
 | average silhouette width | 0.08       | 0.08        | 0.07        | 0.08        |
 | BCubed Precision         | 0.0053507  | 0.005417132 | 0.005466656 | 0.005525278 |
 | BCubed Recall            | 0.9501209  | 0.9334741   | 0.9250736   | 0.9201568   |
