@@ -127,7 +127,9 @@ water_potability$Potability[water_potability$Potability == '1'] <- 'Potable'
 
 water_potability$Potability <- as.factor(water_potability$Potability)
 table(water_potability$Potability)
+
 ```
+
 ```{r}
 print(water_potability)
 ```
@@ -752,6 +754,132 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 cat("AUC:", auc(roc_curve), "\n")
 
 ```
+
+C5.0 newer version of C4.5
+Splitting the data set into two subsets: Training(70%) and Testing(30%):
+```{r}
+set.seed(1958)
+train.indices <- sample(2, nrow(water_potability), replace=TRUE, prob=c(0.7, 0.3))
+w.train <- water_potability[train.indices == 1, ]
+w.test <- water_potability[train.indices == 2, ]
+w.train$Potability <- as.factor(w.train$Potability)
+
+model <- C5.0(Potability ~., data=w.train)
+
+results <- predict(object=model, newdata=w.test, type="class")
+
+table(results, w.test$Potability)
+
+plot(model)
+
+r <- confusionMatrix(results, w.test$Potability)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
+
+
+
+pred_probs <- predict(model, newdata = w.test, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(w.test$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+Splitting the data set into two subsets: Training(80%) and Testing(20%):
+```{r}
+set.seed(1958)
+train.indices <- sample(2, nrow(water_potability), replace=TRUE, prob=c(0.8, 0.2))
+w.train <- water_potability[train.indices == 1, ]
+w.test <- water_potability[train.indices == 2, ]
+w.train$Potability <- as.factor(w.train$Potability)
+
+
+model <- C5.0(Potability ~., data=w.train)
+
+results <- predict(object=model, newdata=w.test, type="class")
+
+table(results, w.test$Potability)
+
+plot(model)
+
+r <- confusionMatrix(results, w.test$Potability)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
+
+
+pred_probs <- predict(model, newdata = w.test, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(w.test$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+Splitting the data set into two subsets: Training(90%) and Testing(10%):
+```{r}
+set.seed(1958)
+train.indices <- sample(2, nrow(water_potability), replace=TRUE, prob=c(0.9, 0.1))
+w.train <- water_potability[train.indices == 1, ]
+w.test <- water_potability[train.indices == 2, ]
+w.train$Potability <- as.factor(w.train$Potability)
+
+
+model <- C5.0(Potability ~., data=w.train)
+
+results <- predict(object=model, newdata=w.test, type="class")
+
+table(results, w.test$Potability)
+
+plot(model)
+```
+
+
+To improve the readability of the decision tree, we decided to sample the data using only the pH and sulfate attributes. We then split the data into training and testing sets using the same split points: Training(90%) and Testing(10%), which allowed for a more manageable decision tree:
+```{r}
+set.seed(1958)
+importent_feature_sample <- select(water_potability,c(1,5,10))
+train.indices <- sample(2, nrow(importent_feature_sample), replace=TRUE, prob=c(0.9, 0.1))
+w.train <- importent_feature_sample[train.indices == 1, ]
+w.test <- importent_feature_sample[train.indices == 2, ]
+w.train$Potability <- as.factor(w.train$Potability)
+
+
+model <- C5.0(Potability ~., data=w.train)
+
+results <- predict(object=model, newdata=w.test, type="class")
+
+table(results, w.test$Potability)
+
+plot(model)
+
+r <- confusionMatrix(results, w.test$Potability)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
+
+
+
+pred_probs <- predict(model, newdata = w.test, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(w.test$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
+```
+
+
 
 
 Gini index (CART)
