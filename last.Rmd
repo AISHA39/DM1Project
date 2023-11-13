@@ -783,6 +783,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 ### Gain ratio (C4.5)
+
 a decision tree-based classifier, is utilized for model training and evaluation. The dataset undergoes cross-validation with different fold settings (3 folds, 5 folds, and 10 folds). For each fold configuration, a J48 model is trained, and its predictive performance is assessed using Receiver Operating Characteristic (ROC) curves. The Area Under the Curve is calculated for each ROC curve, providing a quantitative measure of the model's ability to predict water potability. Notably, the visual inspection of the ROC curves indicates that the model trained with 10-fold cross-validation exhibits the highest discriminative performance. This comparative analysis across various cross-validation scenarios offers valuable insights into the robustness and generalization capability.
 
 
@@ -987,6 +988,8 @@ cat("AUC:", auc(roc_curve), "\n")
 
 
 ###Gini index (CART)
+
+
 we employed the C5.0 algorithm, an enhanced version of the C4.5 decision tree, for model training and evaluation across different training and testing set splits. The dataset underwent three scenarios: Training(70%) and Testing(30%), Training(80%) and Testing(20%), and Training(90%) and Testing(10%). For each case, the C5.0 model was trained on the designated training data, evaluated on the testing data, and its performance was assessed through accuracy, confusion matrix, and ROC curve with Area Under the Curve (AUC).
 
 Upon comparative analysis, it was observed that the model trained with a larger proportion of data (Training 90%, Testing 10%) demonstrated superior performance, achieving higher accuracy and a more discriminative ROC curve. This exploration across different training and testing splits provides valuable insights into the robustness and generalization capability of the C5.0 decision tree algorithm for predicting water potability.
