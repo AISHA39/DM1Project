@@ -31,6 +31,8 @@ Kaggle
 #install.packages("Boruta")
 #install.packages("mlbench")
 #install.packages("randomForest")
+library(cluster)
+library(factoextra) 
 library(outliers)
 library(dplyr)
 library(mlbench)
@@ -586,18 +588,18 @@ ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
 
 is a feature selection technique that recursively removes less important features from a model until the optimal subset is identified. It involves repeatedly training the model, ranking features based on their importance, and eliminating the least important ones.
 
-# ```{r, warning=FALSE}
-# control <- rfeControl(functions=rfFuncs, method="cv",number=10)
-# rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
-# # run the RFE algorithm
-# rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
-# # summarize the results
-# print(rfe_model)
-# # list the chosen features
-# predictors(rfe_model)
-# # plot the results
-# plot(rfe_model, type=c("g", "o"))
-# ```
+```{r, warning=FALSE}
+ control <- rfeControl(functions=rfFuncs, method="cv",number=10)
+ rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
+ # run the RFE algorithm
+ rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
+ # summarize the results
+ print(rfe_model)
+ # list the chosen features
+ predictors(rfe_model)
+ # plot the results
+plot(rfe_model, type=c("g", "o"))
+``` 
 
 ### Data transformation:
 
