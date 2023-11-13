@@ -21,7 +21,8 @@ Kaggle
 
 ### link of the dataset:
 
-<https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability>
+<a href='https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability'>Water Quality and Potability
+</a>
 
 
 # library:
