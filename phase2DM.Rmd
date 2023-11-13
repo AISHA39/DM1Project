@@ -20,6 +20,10 @@ and feature selection.
 #install.packages("Boruta")
 #install.packages("mlbench")
 #install.packages("randomForest")
+#install.packages(factoextra)
+#install.packages(cluster)
+library(cluster)
+library(factoextra) 
 library(outliers)
 library(dplyr)
 library(mlbench)
@@ -1091,8 +1095,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (2 clusters)
-#install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1116,8 +1119,7 @@ fviz_cluster(hc.cut, ellipse.type= "convex")
 
 ```{r}
  #average silhouette for each clusters 
-#install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1188,8 +1190,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (2 clusters)
-#install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1211,8 +1212,7 @@ fviz_cluster(hc2.cut, ellipse.type= "convex")
 ```
 ```{r}
  #average silhouette for each clusters 
-#install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1281,8 +1281,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (2 clusters)
-#install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1304,8 +1303,7 @@ fviz_cluster(hc3.cut, ellipse.type= "convex")
 
 ```{r}
  #average silhouette for each clusters 
-#install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 
@@ -1375,8 +1373,7 @@ kmeans.result
 
 ```{r}
 # visualize clustering (2 clusters)
-#install.packages("factoextra")
-library(factoextra)
+
 fviz_cluster(kmeans.result, data = data_for_cluster)
 ```
 
@@ -1399,8 +1396,7 @@ fviz_cluster(hc4.cut, ellipse.type= "convex")
 
 ```{r}
  #average silhouette for each clusters 
-#install.packages(cluster)
-library(cluster)
+
 avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
 fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
 ```
@@ -1461,8 +1457,7 @@ cat("BCubed Recall:", recall, "\n")
 ```{r}
 # 3- Elbow method
 #fviz_nbclust() with within cluster sums of squares (wss) method
-#install.packages(factoextra)
-library(factoextra) 
+
 fviz_nbclust(data_for_cluster, kmeans, method = "wss") +
   geom_vline(xintercept = 5, linetype = 2)+
   labs(subtitle = "Elbow method")
