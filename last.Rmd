@@ -1644,7 +1644,7 @@ elbow method helps find the optimal number of clusters (k) in k-means clustering
 #fviz_nbclust() with within cluster sums of squares (wss) method
  
 fviz_nbclust(data_for_cluster, kmeans, method = "wss") +
-  geom_vline(xintercept = 4, linetype = 2)+
+  geom_vline(xintercept = 5, linetype = 2)+
   labs(subtitle = "Elbow method")
 ```
 
