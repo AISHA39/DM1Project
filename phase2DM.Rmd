@@ -1056,4 +1056,427 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 cat("AUC:", auc(roc_curve), "\n")
 ```
 
+view data
+```{r}
+View(water_potability)
+data("water_potability")
+summary(water_potability)
+str(water_potability)
+```
+
+Scale data 
+```{r}
+#first:
+#Confirm that all the columns you are trying to scale are indeed numeric. You can use sapply() to check and coerce them to numeric if necessary.
+
+water_potability<- sapply(water_potability, as.numeric)
+
+#sinec all coulme are numeric we wll scale all of them expet class label
+data_for_cluster <- scale(water_potability[, !colnames(water_potability) %in% "Potability"])
+#we use !colnames(water_potability) %in% "Potability" to exclude the "Potability" column
+View(data_for_cluster)
+```
+
+Clustring1
+
+K-means
+```{r}
+# 3- run k-means clustering to find 3 clusters
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(data_for_cluster,2)
+# print the clusterng result
+kmeans.result
+```
+
+```{r}
+# visualize clustering (2 clusters)
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = data_for_cluster)
+```
+
+
+```{r}
+# draw a sample of 50 records from the data, so that the clustering plot will not be over crowded and easy to undrestand 
+idx<-sample(1:dim(data_for_cluster)[1], 50)
+sample_c1<-data_for_cluster[idx, ]
+
+## hiercrchical clustering
+hc.cut<- hcut(sample_c1, k = 2, hc_method= "complete")
+```
+
+```{r}
+# Visualize dendrogram
+fviz_dend(hc.cut,rect= TRUE)
+# Visualize cluster
+fviz_cluster(hc.cut, ellipse.type= "convex")
+```
+
+
+```{r}
+ #average silhouette for each clusters 
+#install.packages(cluster)
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+```
+
+
+```{r}
+
+cluster_assignments <- c(kmeans.result$cluster)
+ground_truth_labels <- c(water_potability)
+data <- data.frame(cluster = cluster_assignments, label = ground_truth_labels)
+
+# Function to calculate BCubed precision and recall
+calculate_bcubed_metrics <- function(data) {
+  n <- nrow(data)
+  precision_sum <- 0
+  recall_sum <- 0
+
+  for (i in 1:n) {
+    cluster <- data$cluster[i]
+    label <- data$label[i]
+    
+# Count the number of items from the same category within the same cluster
+same_category_same_cluster <- sum(data$label[data$cluster == cluster] == label)
+    
+# Count the total number of items in the same cluster
+total_same_cluster <- sum(data$cluster == cluster)
+    
+# Count the total number of items with the same category
+total_same_category <- sum(data$label == label)
+    
+# Calculate precision and recall for the current item and add them to the sums
+precision_sum <- precision_sum + same_category_same_cluster /total_same_cluster
+recall_sum <- recall_sum + same_category_same_cluster / total_same_category
+  }
+
+  # Calculate average precision and recall
+  precision <- precision_sum / n
+  recall <- recall_sum / n
+
+  return(list(precision = precision, recall = recall))
+}
+
+# Calculate BCubed precision and recall
+metrics <- calculate_bcubed_metrics(data)
+
+# Extract precision and recall from the metrics
+precision <- metrics$precision
+recall <- metrics$recall
+
+# Print the results
+cat("BCubed Precision:", precision, "\n")
+cat("BCubed Recall:", recall, "\n")
+
+```
+
+
+Clustring2
+
+K-means
+```{r}
+# 3- run k-means clustering to find 3 clusters
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(data_for_cluster,3)
+# print the clusterng result
+kmeans.result
+```
+
+```{r}
+# visualize clustering (2 clusters)
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = data_for_cluster)
+```
+
+
+```{r}
+# draw a sample of 50 records from the data, so that the clustering plot will not be over crowded and easy to undrestand 
+idx2<-sample(1:dim(data_for_cluster)[1], 50)
+sample_c2<-data_for_cluster[idx2, ]
+
+## hiercrchicalclustering
+hc2.cut<- hcut(sample_c2, k = 3, hc_method= "complete")
+```
+
+```{r}
+# Visualize dendrogram
+fviz_dend(hc2.cut,rect= TRUE)
+# Visualize cluster
+fviz_cluster(hc2.cut, ellipse.type= "convex")
+```
+```{r}
+ #average silhouette for each clusters 
+#install.packages(cluster)
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+```
+
+```{r}
+
+cluster_assignments <- c(kmeans.result$cluster)
+ground_truth_labels <- c(water_potability)
+data <- data.frame(cluster = cluster_assignments, label = ground_truth_labels)
+
+# Function to calculate BCubed precision and recall
+calculate_bcubed_metrics <- function(data) {
+  n <- nrow(data)
+  precision_sum <- 0
+  recall_sum <- 0
+
+  for (i in 1:n) {
+    cluster <- data$cluster[i]
+    label <- data$label[i]
+    
+# Count the number of items from the same category within the same cluster
+same_category_same_cluster <- sum(data$label[data$cluster == cluster] == label)
+    
+# Count the total number of items in the same cluster
+total_same_cluster <- sum(data$cluster == cluster)
+    
+# Count the total number of items with the same category
+total_same_category <- sum(data$label == label)
+    
+# Calculate precision and recall for the current item and add them to the sums
+precision_sum <- precision_sum + same_category_same_cluster /total_same_cluster
+recall_sum <- recall_sum + same_category_same_cluster / total_same_category
+  }
+
+  # Calculate average precision and recall
+  precision <- precision_sum / n
+  recall <- recall_sum / n
+
+  return(list(precision = precision, recall = recall))
+}
+
+# Calculate BCubed precision and recall
+metrics <- calculate_bcubed_metrics(data)
+
+# Extract precision and recall from the metrics
+precision <- metrics$precision
+recall <- metrics$recall
+
+# Print the results
+cat("BCubed Precision:", precision, "\n")
+cat("BCubed Recall:", recall, "\n")
+
+```
+
+Clustring3
+
+K-means
+```{r}
+# 3- run k-means clustering to find 3 clusters
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(data_for_cluster,4)
+# print the clusterng result
+kmeans.result
+```
+
+```{r}
+# visualize clustering (2 clusters)
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = data_for_cluster)
+```
+
+```{r}
+# draw a sample of 50 records from the data, so that the clustering plot will not be over crowded and easy to undrestand 
+idx3<-sample(1:dim(data_for_cluster)[1], 50)
+sample_c3<-data_for_cluster[idx3, ]
+
+## hiercrchicalclustering
+hc3.cut<- hcut(sample_c3, k = 4, hc_method= "complete")
+```
+
+```{r}
+# Visualize dendrogram
+fviz_dend(hc3.cut,rect= TRUE)
+# Visualize cluster
+fviz_cluster(hc3.cut, ellipse.type= "convex")
+```
+
+```{r}
+ #average silhouette for each clusters 
+install.packages(cluster)
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+
+```
+
+```{r}
+
+cluster_assignments <- c(kmeans.result$cluster)
+ground_truth_labels <- c(water_potability)
+data <- data.frame(cluster = cluster_assignments, label = ground_truth_labels)
+
+# Function to calculate BCubed precision and recall
+calculate_bcubed_metrics <- function(data) {
+  n <- nrow(data)
+  precision_sum <- 0
+  recall_sum <- 0
+
+  for (i in 1:n) {
+    cluster <- data$cluster[i]
+    label <- data$label[i]
+    
+# Count the number of items from the same category within the same cluster
+same_category_same_cluster <- sum(data$label[data$cluster == cluster] == label)
+    
+# Count the total number of items in the same cluster
+total_same_cluster <- sum(data$cluster == cluster)
+    
+# Count the total number of items with the same category
+total_same_category <- sum(data$label == label)
+    
+# Calculate precision and recall for the current item and add them to the sums
+precision_sum <- precision_sum + same_category_same_cluster /total_same_cluster
+recall_sum <- recall_sum + same_category_same_cluster / total_same_category
+  }
+
+  # Calculate average precision and recall
+  precision <- precision_sum / n
+  recall <- recall_sum / n
+
+  return(list(precision = precision, recall = recall))
+}
+
+# Calculate BCubed precision and recall
+metrics <- calculate_bcubed_metrics(data)
+
+# Extract precision and recall from the metrics
+precision <- metrics$precision
+recall <- metrics$recall
+
+# Print the results
+cat("BCubed Precision:", precision, "\n")
+cat("BCubed Recall:", recall, "\n")
+
+```
+
+Clustring4
+
+K-means
+```{r}
+# 3- run k-means clustering to find 3 clusters
+#set a seed for random number generation  to make the results reproducible
+set.seed(8953)
+kmeans.result <- kmeans(data_for_cluster,5)
+# print the clusterng result
+kmeans.result
+```
+
+```{r}
+# visualize clustering (2 clusters)
+#install.packages("factoextra")
+library(factoextra)
+fviz_cluster(kmeans.result, data = data_for_cluster)
+```
+
+```{r}
+# draw a sample of 50 records from the data, so that the clustering plot will not be over crowded and easy to undrestand 
+idx4<-sample(1:dim(data_for_cluster)[1], 50)
+sample_c4<-data_for_cluster[idx4, ]
+
+## hiercrchicalclustering
+hc4.cut<- hcut(sample_c4, k = 5, hc_method= "complete")
+```
+
+```{r}
+# Visualize dendrogram
+fviz_dend(hc4.cut,rect= TRUE)
+# Visualize cluster
+fviz_cluster(hc4.cut, ellipse.type= "convex")
+```
+
+
+```{r}
+ #average silhouette for each clusters 
+#install.packages(cluster)
+library(cluster)
+avg_sil <- silhouette(kmeans.result$cluster,dist(data_for_cluster)) #a dissimilarity object inheriting from class dist or coercible to one. If not specified, dmatrix must be.
+fviz_silhouette(avg_sil)#k-means clustering with estimating k and initializations
+```
+
+```{r}
+
+cluster_assignments <- c(kmeans.result$cluster)
+ground_truth_labels <- c(water_potability)
+data <- data.frame(cluster = cluster_assignments, label = ground_truth_labels)
+
+# Function to calculate BCubed precision and recall
+calculate_bcubed_metrics <- function(data) {
+  n <- nrow(data)
+  precision_sum <- 0
+  recall_sum <- 0
+
+  for (i in 1:n) {
+    cluster <- data$cluster[i]
+    label <- data$label[i]
+    
+# Count the number of items from the same category within the same cluster
+same_category_same_cluster <- sum(data$label[data$cluster == cluster] == label)
+    
+# Count the total number of items in the same cluster
+total_same_cluster <- sum(data$cluster == cluster)
+    
+# Count the total number of items with the same category
+total_same_category <- sum(data$label == label)
+    
+# Calculate precision and recall for the current item and add them to the sums
+precision_sum <- precision_sum + same_category_same_cluster /total_same_cluster
+recall_sum <- recall_sum + same_category_same_cluster / total_same_category
+  }
+
+  # Calculate average precision and recall
+  precision <- precision_sum / n
+  recall <- recall_sum / n
+
+  return(list(precision = precision, recall = recall))
+}
+
+# Calculate BCubed precision and recall
+metrics <- calculate_bcubed_metrics(data)
+
+# Extract precision and recall from the metrics
+precision <- metrics$precision
+recall <- metrics$recall
+
+# Print the results
+cat("BCubed Precision:", precision, "\n")
+cat("BCubed Recall:", recall, "\n")
+
+```
+
+
+
+
+```{r}
+# 3- Elbow method
+#fviz_nbclust() with within cluster sums of squares (wss) method
+#install.packages(factoextra)
+library(factoextra) 
+fviz_nbclust(data_for_cluster, kmeans, method = "wss") +
+  geom_vline(xintercept = 5, linetype = 2)+
+  labs(subtitle = "Elbow method")
+```
+
+
+
+WSS is to give you an indication of how well the data can be represented by a certain number of clusters. In k-means clustering,  typically choose the number of clusters (k) that minimizes this total WSS.
+```{r}
+# Assuming you already have your data in 'my_data' and you want to try different values of 'k'
+for (k in 2:5) {
+  kmeans_result <- kmeans(water_potability, centers = k)
+  total_withinss <- kmeans_result$tot.withinss
+  cat("Total Within-Cluster Sum of Squares for k =", k, ":", total_withinss, "\n")
+}
+
 
