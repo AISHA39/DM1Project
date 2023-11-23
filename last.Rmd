@@ -23,8 +23,8 @@ Kaggle
 
 <a href='https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability'>Water Quality and Potability</a>
 
-
 # library:
+
 ```{r}
 #install.packages("caret")
 #install.packages("glmnet")
@@ -61,21 +61,23 @@ water_potability = read.csv('Dataset/water_potability.csv')
 str(water_potability)
 ```
 
-
 ### sample of data
 
 sample of raw dataset(first 10 rows):
+
 ```{r}
 
 head(water_potability,10)
 ```
 
 sample of raw dataset(last 10 rows):
+
 ```{r}
 tail(water_potability, 10)
 ```
 
 Five number summary of each attribute in our dataset:
+
 ```{r}
 summary(water_potability)
 ```
@@ -95,7 +97,6 @@ View(water_potability)
 sample(water_potability)
 ```
 
-
 ### Checking for missing values:
 
 The absence of data in certain variables or columns in a dataset is referred to as missing or null values due to various reasons. It can have a negative impact on the dataset's efficiency and the information that can be taken from it later, so we checked to see whether our data had missing or null values and eliminated these rows to produce a more efficient dataset.
@@ -113,7 +114,6 @@ sum(is.na(water_potability))
 colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
 ```
-
 
 ```{r}
 colSums(is.na(water_potability))
@@ -181,6 +181,7 @@ As you can see the highest Variance Solids, and the lowest Turbidity.
 ### Statistical Measures:
 
 ### In the given code, you've used the summary function to obtain key statistical measures for variables such as "Conductivity," "Organic_carbon," "Hardness," etc., in the water_potability dataset. These measures include minimum, 1st quartile, median, mean, 3rd quartile, and maximum values, offering a succinct overview of each variable's distribution and characteristics. This provides essential insights for the initial exploration and understanding of the dataset.
+
 With using minimum, maximum, mean, median laws it helps to provide an overview of the data's key characteristics
 
 ```{r}
@@ -552,16 +553,14 @@ heatmap(correlation_matrix)
 we remove the correlation between the features and represent it in heat map
 
 ### Feature selection:
+
 ### Feature selection is deemed unnecessary for our dataset, as each attribute is deemed to provide crucial, distinct information related to the chosen variable. The reasoning behind this decision is that eliminating any attribute through feature selection could potentially lead to the loss of vital data. Additionally, certain machine learning algorithms possess the capability to identify intricate interactions and attribute correlations. By including all variables in the model, we aim to enable the learning and exploitation of complex patterns within the dataset, potentially enhancing predictive performance, especially considering the dataset's substantial size with 10 columns
 
 it is choosing the most relevant features from a dataset to enhance model performance, reduce overfitting, and improve computational efficiency.
 
-
 Ranking features by importance is a technique used to identify the most influential variables in a dataset for predicting a target variable. This process helps understand which features impact the model's performance most by ranking features by importance.
 
 Removing redundant features means eliminating variables or features from a dataset that do not provide additional or unique information.
-
-
 
 ### Rank Features By Importance:
 
@@ -588,18 +587,7 @@ ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
 
 is a feature selection technique that recursively removes less important features from a model until the optimal subset is identified. It involves repeatedly training the model, ranking features based on their importance, and eliminating the least important ones.
 
-```{r, warning=FALSE}
-control <- rfeControl(functions=rfFuncs, method="cv",number=10)
-rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE)
-# run the RFE algorithm
-rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control)
-# summarize the results
-print(rfe_model)
-# list the chosen features
-predictors(rfe_model)
-# plot the results
-plot(rfe_model, type=c("g", "o"))
-```
+# `{control <- rfeControl(functions=rfFuncs, method="cv",number=10)} # rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE) # # run the RFE algorithm # rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control) # # summarize the results # print(rfe_model) # # list the chosen features # predictors(rfe_model) # # plot the results # plot(rfe_model, type=c("g", "o"))`
 
 ### Data transformation:
 
@@ -637,34 +625,34 @@ print(wp)
 
 Therefore, we transformed the continuous values of the numeric attributes into intervals by dividing the values to fall on one of the possible interval labels by discretization. The values will be meaningful and simpler to classify or perform other methods to help us later in our model. So, In Trihalomethanes, we intervals by dividing the values by 10 to have labels with equal width : [20,30) [30,40) [40,50) [50,60) [60,70) [70,80) [80,90) [90,100) [100,110).
 
-### ##Encoding
+### Encoding
 
 encoding is the process of converting characters or strings into a specific encoding format. Since we don't have a Nominal attribute in our database we couldn't implement it.
+
 ```{r}
 wp
 ```
 
 ## classfication and clustring In our dataset exploration, we employed both supervised and unsupervised learning methodologies through classification and clustering techniques.
 
- For classification, we chose the decision tree algorithm, a recursive approach constructing a tree structure with leaf nodes signifying final decisions. The objective was to predict the class label (potability), with values 0 or 1, based on attributes like pH, Hardness, Solids, Chloramines, Sulfate, Conductivity, Organic_carbon, Trihalomethanes, and Turbidity. The dataset underwent division into training and testing sets for constructing and evaluating the decision tree. Model evaluation encompassed metrics like accuracy and cost-sensitive measures, gauged using a confusion matrix. Our toolkit included packages such as 'party' and 'caret,' incorporating methods like 'sample' for data splitting, 'ctree' for decision tree construction, 'predict' for testing predictions, and 'confusionMatrix' for model evaluation.
+For classification, we chose the decision tree algorithm, a recursive approach constructing a tree structure with leaf nodes signifying final decisions. The objective was to predict the class label (potability), with values 0 or 1, based on attributes like pH, Hardness, Solids, Chloramines, Sulfate, Conductivity, Organic_carbon, Trihalomethanes, and Turbidity. The dataset underwent division into training and testing sets for constructing and evaluating the decision tree. Model evaluation encompassed metrics like accuracy and cost-sensitive measures, gauged using a confusion matrix. Our toolkit included packages such as 'party' and 'caret,' incorporating methods like 'sample' for data splitting, 'ctree' for decision tree construction, 'predict' for testing predictions, and 'confusionMatrix' for model evaluation.
 
- In the unsupervised clustering phase, we excluded the class label attribute "potability" and utilized numeric attributes such as pH, Hardness, Solids, Chloramines, Sulfate, Conductivity, Organic_carbon, Trihalomethanes, and Turbidity. Employing the K-means algorithm, clusters were formed, each represented by a center point, and objects were assigned to the nearest cluster. For this phase, we made use of packages such as 'cluster' and 'factoextra,' incorporating methods like 'scale()' for data scaling, 'Kmeans()' for cluster creation.
+In the unsupervised clustering phase, we excluded the class label attribute "potability" and utilized numeric attributes such as pH, Hardness, Solids, Chloramines, Sulfate, Conductivity, Organic_carbon, Trihalomethanes, and Turbidity. Employing the K-means algorithm, clusters were formed, each represented by a center point, and objects were assigned to the nearest cluster. For this phase, we made use of packages such as 'cluster' and 'factoextra,' incorporating methods like 'scale()' for data scaling, 'Kmeans()' for cluster creation.
 
- Cluster validation was performed using the 'silhouette()' method to calculate averages for each cluster. In both supervised and unsupervised techniques, we maintained result consistency by employing the 'set.seed()' method with the same random number when experimenting with different dataset sizes.
-
+Cluster validation was performed using the 'silhouette()' method to calculate averages for each cluster. In both supervised and unsupervised techniques, we maintained result consistency by employing the 'set.seed()' method with the same random number when experimenting with different dataset sizes.
 
 #Training technique
 
- In the provided code, we systematically addressed outliers in multiple columns of our dataset. Beginning with a summary of each column's statistics, including quartiles and the interquartile range (IQR), we established outlier detection limits. A visual assessment was conducted using boxplots, categorized by relevant variables such as "Potability." A loop was implemented to iteratively identify and remove outliers in each column, ensuring a robust cleansing process. The final step involved summarizing the columns post-outlier removal, offering insights into the impact on the distribution of each variable. This comprehensive approach was applied uniformly to all dataset columns, promoting consistency in the outlier-handling process.
-
+In the provided code, we systematically addressed outliers in multiple columns of our dataset. Beginning with a summary of each column's statistics, including quartiles and the interquartile range (IQR), we established outlier detection limits. A visual assessment was conducted using boxplots, categorized by relevant variables such as "Potability." A loop was implemented to iteratively identify and remove outliers in each column, ensuring a robust cleansing process. The final step involved summarizing the columns post-outlier removal, offering insights into the impact on the distribution of each variable. This comprehensive approach was applied uniformly to all dataset columns, promoting consistency in the outlier-handling process.
 
 ### Information gain (ID3)
-In this R code, the dataset  undergoes a process of training and testing using the ID3 algorithm for decision tree classification. The data is successively split into training sets of 70%, 80%, and 90%, with corresponding testing sets of 30%, 20%, and 10%. The decision tree models are trained on these subsets, utilizing features such as pH, hardness, solids, chloramines, sulfate, conductivity, organic carbon, trihalomethanes, and turbidity to predict water potability.
+
+In this R code, the dataset undergoes a process of training and testing using the ID3 algorithm for decision tree classification. The data is successively split into training sets of 70%, 80%, and 90%, with corresponding testing sets of 30%, 20%, and 10%. The decision tree models are trained on these subsets, utilizing features such as pH, hardness, solids, chloramines, sulfate, conductivity, organic carbon, trihalomethanes, and turbidity to predict water potability.
 
 For each split, the decision tree models are evaluated on their respective testing sets, and performance metrics such as confusion matrices and accuracy are computed. Additionally, Receiver Operating Characteristic (ROC) curves are generated, providing insights into the models' discrimination capabilities. The Area Under the Curve (AUC) is calculated as a quantitative measure of model performance. This comprehensive approach enables a systematic exploration of the ID3 decision tree's effectiveness in predicting water potability under varying training and testing scenarios.
 
-
 Splitting the data set into two subsets: Training(70%) and Testing(30%):
+
 ```{r}
 set.seed(1958)
 ind <- sample(2, nrow(wp), replace = TRUE, prob = c(0.7, 0.3))
@@ -706,6 +694,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 Splitting the data set into two subsets: Training(80%) and Testing(20%):
+
 ```{r}
 
 set.seed(1958)
@@ -745,6 +734,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 Splitting the data set into two subsets: Training(90%) and Testing(10%):
+
 ```{r}
 set.seed(1958)
 ind <- sample(2, nrow(wp), replace = TRUE, prob = c(0.9, 0.1))
@@ -786,7 +776,6 @@ cat("AUC:", auc(roc_curve), "\n")
 
 a decision tree-based classifier, is utilized for model training and evaluation. The dataset undergoes cross-validation with different fold settings (3 folds, 5 folds, and 10 folds). For each fold configuration, a J48 model is trained, and its predictive performance is assessed using Receiver Operating Characteristic (ROC) curves. The Area Under the Curve is calculated for each ROC curve, providing a quantitative measure of the model's ability to predict water potability. Notably, the visual inspection of the ROC curves indicates that the model trained with 10-fold cross-validation exhibits the highest discriminative performance. This comparative analysis across various cross-validation scenarios offers valuable insights into the robustness and generalization capability.
 
-
 ```{r}
 # 3 folds
 set.seed(1958)
@@ -798,8 +787,18 @@ C45Fit <- train(Potability ~ .,method = "J48",data = wp,
                 savePredictions = TRUE))
 
 C45Fit
+summary(C45Fit)
 
 C45Fit$finalModel
+
+pred_probs <- predict(C45Fit, newdata = wp)
+re<-table(pred_probs ,wp$Potability)
+
+r <- confusionMatrix(re)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
 
 pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
 binary_outcome <- as.numeric(wp$Potability == "Potable")
@@ -822,8 +821,18 @@ C45Fit <- train(Potability ~., method="J48", data=wp,
                 savePredictions = TRUE))
 
 C45Fit
+summary(C45Fit)
 
 C45Fit$finalModel
+
+pred_probs <- predict(C45Fit, newdata = wp)
+re<-table(pred_probs ,wp$Potability)
+
+r <- confusionMatrix(re)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
 
 pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
 binary_outcome <- as.numeric(wp$Potability == "Potable")
@@ -845,8 +854,18 @@ C45Fit <- train(Potability ~., method="J48", data=wp,
                   method="cv", indexOut=train))
 
 C45Fit
+summary(C45Fit)
 
 C45Fit$finalModel
+
+pred_probs <- predict(C45Fit, newdata = wp)
+re<-table(pred_probs ,wp$Potability)
+
+r <- confusionMatrix(re)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
 
 pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
 binary_outcome <- as.numeric(wp$Potability == "Potable")
@@ -859,8 +878,8 @@ cat("AUC:", auc(roc_curve), "\n")
 
 ```
 
-C5.0 newer version of C4.5
-Splitting the data set into two subsets: Training(70%) and Testing(30%):
+C5.0 newer version of C4.5 Splitting the data set into two subsets: Training(70%) and Testing(30%):
+
 ```{r}
 set.seed(1958)
 train.indices <- sample(2, nrow(water_potability), replace=TRUE, prob=c(0.7, 0.3))
@@ -895,6 +914,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 Splitting the data set into two subsets: Training(80%) and Testing(20%):
+
 ```{r}
 set.seed(1958)
 train.indices <- sample(2, nrow(water_potability), replace=TRUE, prob=c(0.8, 0.2))
@@ -929,6 +949,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 Splitting the data set into two subsets: Training(90%) and Testing(10%):
+
 ```{r}
 set.seed(1958)
 train.indices <- sample(2, nrow(water_potability), replace=TRUE, prob=c(0.9, 0.1))
@@ -944,11 +965,27 @@ results <- predict(object=model, newdata=w.test, type="class")
 table(results, w.test$Potability)
 
 plot(model)
+
+r <- confusionMatrix(results, w.test$Potability)
+acc <- r$overall["Accuracy"]*100
+acc
+as.matrix(r, what = "classes")
+print(r)
+
+
+
+pred_probs <- predict(model, newdata = w.test, type = "prob")[, "Potable"]
+binary_outcome <- as.numeric(w.test$Potability == "Potable")
+# ROC curve
+roc_curve <- roc(binary_outcome, pred_probs)
+plot(roc_curve, main = "ROC Curve", col = "blue", lwd = 2)
+abline(a = 0, b = 1, col = "gray", lty = 2)
+# Print AUC
+cat("AUC:", auc(roc_curve), "\n")
 ```
 
+###To improve the readability of the decision tree, we decided to sample the data using only the pH and sulfate attributes. We then split the data into training and testing sets using the same split points: ###Training(90%) and Testing(10%), which allowed for a more manageable decision tree:
 
-###To improve the readability of the decision tree, we decided to sample the data using only the pH and sulfate attributes. We then split the data into training and testing sets using the same split points:
-###Training(90%) and Testing(10%), which allowed for a more manageable decision tree:
 ```{r}
 set.seed(1958)
 importent_feature_sample <- select(water_potability,c(1,5,10))
@@ -984,17 +1021,14 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 cat("AUC:", auc(roc_curve), "\n")
 ```
 
-
-
-
 ###Gini index (CART)
-
 
 we employed the C5.0 algorithm, an enhanced version of the C4.5 decision tree, for model training and evaluation across different training and testing set splits. The dataset underwent three scenarios: Training(70%) and Testing(30%), Training(80%) and Testing(20%), and Training(90%) and Testing(10%). For each case, the C5.0 model was trained on the designated training data, evaluated on the testing data, and its performance was assessed through accuracy, confusion matrix, and ROC curve with Area Under the Curve (AUC).
 
 Upon comparative analysis, it was observed that the model trained with a larger proportion of data (Training 90%, Testing 10%) demonstrated superior performance, achieving higher accuracy and a more discriminative ROC curve. This exploration across different training and testing splits provides valuable insights into the robustness and generalization capability of the C5.0 decision tree algorithm for predicting water potability.
 
 Splitting the data set into two subsets: Training(70%) and Testing(30%):
+
 ```{r}
 set.seed(1958)
 train = sample(2, nrow(wp), replace=TRUE, prob=c(0.7, 0.3))
@@ -1055,6 +1089,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 Splitting the data set into two subsets: Training(80%) and Testing(20%):
+
 ```{r}
 set.seed(1958)
 train = sample(2, nrow(wp), replace=TRUE, prob=c(0.8, 0.2))
@@ -1112,6 +1147,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```
 
 Splitting the data set into two subsets: Training(90%) and Testing(10%):
+
 ```{r}
 set.seed(1958)
 train = sample(2, nrow(wp), replace=TRUE, prob=c(0.9, 0.1))
@@ -1166,17 +1202,17 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+
 ### Comparison Criteria:
 
-|            |Information Gain:               |Gain Ratio:                     | Gini index:                      |
-|------------|--------------------------------|--------------------------------|----------------------------------|
-| Accuracy   | 0.5820611                      | 0.9686781                      | 0.5935115                        |
-| precision  | 0.58546169                     | 0.005417132                    | 0.6004320                        |   
-| sensitivity| 0.97385621                     | 0.9334741                      | 0.9084967                        |    
-| specificity| 0.03211009                     | 0.880677                       | 0.1513761                        |              
-                                                                       
-As shown in the comparison the best technique to choose is Gain Raio Due to the high accuracy 
+|             | Information Gain: | Gain Ratio: | Gini index: |
+|-------------|-------------------|-------------|-------------|
+| Accuracy    | 0.5820611         | 0.9686781   | 0.5935115   |
+| precision   | 0.58546169        | 0.005417132 | 0.6004320   |
+| sensitivity | 0.97385621        | 0.9334741   | 0.9084967   |
+| specificity | 0.03211009        | 0.880677    | 0.1513761   |
 
+As shown in the comparison the best technique to choose is Gain Raio Due to the high accuracy
 
 ```{r}
 summary(water_potability)
@@ -1665,7 +1701,7 @@ for (k in 2:5) {
 ### Comparison Criteria:
 
 |                          | Clustring1 | Clustring2  | Clustring3  | Clustring4  |
-|--------------------------|------------|-------------|-------------|-------------|
+|----------------|--------------|--------------|--------------|--------------|
 | average silhouette width | 0.08       | 0.08        | 0.07        | 0.08        |
 | BCubed Precision         | 0.0053507  | 0.005417132 | 0.005466656 | 0.005525278 |
 | BCubed Recall            | 0.9501209  | 0.9334741   | 0.9250736   | 0.9201568   |
@@ -1679,7 +1715,6 @@ Total Within-Cluster Sum of Squares for k = 3 : 18005636207
 Total Within-Cluster Sum of Squares for k = 4 : 10644686913
 
 Total Within-Cluster Sum of Squares for k = 5 : 7263150876
-
 
 After testing and using all the four k means we concluded that the best is k= 5 for our dataset
 
