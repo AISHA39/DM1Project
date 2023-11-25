@@ -847,6 +847,7 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 
+
 ```
 
 ```{r}
@@ -898,6 +899,7 @@ results <- predict(object=model, newdata=w.test, type="class")
 table(results, w.test$Potability)
 
 plot(model)
+plot(model,type='simple')
 
 r <- confusionMatrix(results, w.test$Potability)
 acc <- r$overall["Accuracy"]*100
@@ -934,6 +936,7 @@ results <- predict(object=model, newdata=w.test, type="class")
 table(results, w.test$Potability)
 
 plot(model)
+plot(model,type='simple')
 
 r <- confusionMatrix(results, w.test$Potability)
 acc <- r$overall["Accuracy"]*100
@@ -969,6 +972,7 @@ results <- predict(object=model, newdata=w.test, type="class")
 table(results, w.test$Potability)
 
 plot(model)
+plot(model,type='simple')
 
 r <- confusionMatrix(results, w.test$Potability)
 acc <- r$overall["Accuracy"]*100
@@ -1006,6 +1010,7 @@ results <- predict(object=model, newdata=w.test, type="class")
 table(results, w.test$Potability)
 
 plot(model)
+plot(model,type='simple')
 
 r <- confusionMatrix(results, w.test$Potability)
 acc <- r$overall["Accuracy"]*100
@@ -1701,19 +1706,6 @@ fres.nbclust <- NbClust(data_for_cluster, distance="euclidean", min.nc = 2, max.
 
 ```
 
-```{r, warning=FALSE}
-silhouette_score <- function(k){ 
-km <- kmeans(data_for_cluster, centers = k,nstart=25) # if centers is a number, how many random sets should be chosen?
-ss <- silhouette(km$cluster, dist(data_for_cluster))
-sil<- mean(ss[, 3])
-return(sil)
-}
-##  k cluster range from 2 to 10
-k <- 2:10
-##  call  function fore k value
-avg_sil <- sapply(k, silhouette_score)  ##Apply a Function over a List or Vector
-plot(k, type='b', avg_sil, xlab='Number of clusters', ylab='Average Silhouette Scores', frame=FALSE)
-```
 
 ```{r, warning=FALSE}
 # Gap statistic
