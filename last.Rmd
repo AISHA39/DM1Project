@@ -671,6 +671,8 @@ table(predict(m.ctree), train.data$Potability)
 
 print(m.ctree)
 plot(m.ctree, type="simple")
+plot(m.ctree)
+
 
 testPred <- predict(m.ctree, newdata = test.data)
 result<-table(testPred, test.data$Potability)
@@ -712,6 +714,7 @@ table(predict(m.ctree), train.data$Potability)
 
 print(m.ctree)
 plot(m.ctree, type="simple")
+plot(m.ctree)
 
 testPred <- predict(m.ctree, newdata = test.data)
 result<-table(testPred, test.data$Potability)
@@ -751,6 +754,7 @@ table(predict(m.ctree), train.data$Potability)
 
 print(m.ctree)
 plot(m.ctree, type="simple")
+plot(m.ctree)
 
 testPred <- predict(m.ctree, newdata = test.data)
 result<-table(testPred, test.data$Potability)
@@ -792,13 +796,13 @@ summary(C45Fit)
 C45Fit$finalModel
 
 pred_probs <- predict(C45Fit, newdata = wp)
-re<-table(pred_probs ,wp$Potability)
+re3<-table(pred_probs ,wp$Potability)
 
-r <- confusionMatrix(re)
-acc <- r$overall["Accuracy"]*100
+r3 <- confusionMatrix(re3)
+acc <- r3$overall["Accuracy"]*100
 acc
-as.matrix(r, what = "classes")
-print(r)
+as.matrix(r3, what = "classes")
+print(r3)
 
 pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
 binary_outcome <- as.numeric(wp$Potability == "Potable")
@@ -826,13 +830,13 @@ summary(C45Fit)
 C45Fit$finalModel
 
 pred_probs <- predict(C45Fit, newdata = wp)
-re<-table(pred_probs ,wp$Potability)
+re5<-table(pred_probs ,wp$Potability)
 
-r <- confusionMatrix(re)
-acc <- r$overall["Accuracy"]*100
+r5 <- confusionMatrix(re5)
+acc <- r5$overall["Accuracy"]*100
 acc
-as.matrix(r, what = "classes")
-print(r)
+as.matrix(r5, what = "classes")
+print(r5)
 
 pred_probs <- predict(C45Fit, newdata = wp, type = "prob")[, "Potable"]
 binary_outcome <- as.numeric(wp$Potability == "Potable")
@@ -1021,11 +1025,11 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 cat("AUC:", auc(roc_curve), "\n")
 ```
 
-###Gini index (CART)
-
 we employed the C5.0 algorithm, an enhanced version of the C4.5 decision tree, for model training and evaluation across different training and testing set splits. The dataset underwent three scenarios: Training(70%) and Testing(30%), Training(80%) and Testing(20%), and Training(90%) and Testing(10%). For each case, the C5.0 model was trained on the designated training data, evaluated on the testing data, and its performance was assessed through accuracy, confusion matrix, and ROC curve with Area Under the Curve (AUC).
 
 Upon comparative analysis, it was observed that the model trained with a larger proportion of data (Training 90%, Testing 10%) demonstrated superior performance, achieving higher accuracy and a more discriminative ROC curve. This exploration across different training and testing splits provides valuable insights into the robustness and generalization capability of the C5.0 decision tree algorithm for predicting water potability.
+
+###Gini index (CART)
 
 Splitting the data set into two subsets: Training(70%) and Testing(30%):
 
@@ -1337,6 +1341,7 @@ recall_sum <- recall_sum + same_category_same_cluster / total_same_category
 
 # Calculate BCubed precision and recall
 metrics <- calculate_bcubed_metrics(data)
+
 
 # Extract precision and recall from the metrics
 precision <- metrics$precision
@@ -1684,6 +1689,39 @@ fviz_nbclust(data_for_cluster, kmeans, method = "wss") +
   labs(subtitle = "Elbow method")
 ```
 
+```{r}
+# 2- silhouette method
+#install.packages("NbClust")
+library(NbClust)
+#a)fviz_nbclust() with silhouette method using library(factoextra) 
+fviz_nbclust(data_for_cluster, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+
+fres.nbclust <- NbClust(data_for_cluster, distance="euclidean", min.nc = 2, max.nc = 10, method="kmeans", index="all")
+
+```
+
+```{r, warning=FALSE}
+silhouette_score <- function(k){ 
+km <- kmeans(data_for_cluster, centers = k,nstart=25) # if centers is a number, how many random sets should be chosen?
+ss <- silhouette(km$cluster, dist(data_for_cluster))
+sil<- mean(ss[, 3])
+return(sil)
+}
+##  k cluster range from 2 to 10
+k <- 2:10
+##  call  function fore k value
+avg_sil <- sapply(k, silhouette_score)  ##Apply a Function over a List or Vector
+plot(k, type='b', avg_sil, xlab='Number of clusters', ylab='Average Silhouette Scores', frame=FALSE)
+```
+
+```{r, warning=FALSE}
+# Gap statistic
+set.seed(123)
+fviz_nbclust(data_for_cluster, kmeans, nstart = 25,  method = "gap_stat", nboot = 500, verbose = FALSE)+
+  labs(subtitle = "Gap statistic method")
+```
+
 ### Total Within-Cluster Sum of Squares for k
 
 WSS is to give you an indication of how well the data can be represented by a certain number of clusters. In k-means clustering, typically choose the number of clusters (k) that minimizes this total WSS.
@@ -1701,8 +1739,8 @@ for (k in 2:5) {
 ### Comparison Criteria:
 
 |                          | Clustring1 | Clustring2  | Clustring3  | Clustring4  |
-|----------------|--------------|--------------|--------------|--------------|
-| average silhouette width | 0.08       | 0.08        | 0.07        | 0.08        |
+|---------------|---------------|---------------|---------------|---------------|
+| average silhouette width | 0.09       | 0.08        | 0.08        | 0.08        |
 | BCubed Precision         | 0.0053507  | 0.005417132 | 0.005466656 | 0.005525278 |
 | BCubed Recall            | 0.9501209  | 0.9334741   | 0.9250736   | 0.9201568   |
 |                          |            |             |             |             |
