@@ -1,9 +1,16 @@
 ---
 title: "Water Quality and Potability"
-output: html_notebook
+output: html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
 ---
 
 ## This code is running using R notebook in RStudio
+
+###The Problem
+
+Water is very important to the continuity of life and is one of the six essential nutrients (carbohydrates, protein, fat, vitamins, and minerals). Approximately 70% of the plants are covered with water, but only 2.5% are suitable for drinking or cultivation. As humans use more water, it's getting harder to find water for consumption, whether it's because of fertilizers, industrial pollution, or excessive usage of water, which causes the groundwater reservoirs in densely populated cities to shrink. And with increasing population density, we need more water and food, so one of the solutions is water desalination to make it potable. In order to assess quality Potability , which is the suitability of water for human consumption, we need quality measurements and assessments.
 
 ### Goals:
 
@@ -15,13 +22,34 @@ We are collecting a dataset on water quality to train a machine learning model f
 
 2-clustering in this dataset is to identify natural groupings or clusters within the water samples based on their quality parameters.
 
+###Data
+
 ### Source of the dataset:
 
 Kaggle
 
-### link of the dataset:
+### Link of the dataset:
 
-<a href='https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability'>Water Quality and Potability</a>
+[Water Quality and Potability](https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability)
+
+### Information about the dataset
+
+it is contains 10 attributes, 3276 objects, and the class label for our dataset is Potability.
+
+### Attribute information
+
+| Attribute       | Description                   | Data Type | Possible Values |
+|----------------|-------------------------|----------------|-----------------|
+| ph              | pH level of water             | decimal   | 0-14            |
+| Hardness        | Water hardness in water       | decimal   | 47.4-323        |
+| Solids          | Dissolved solids in water     | decimal   | 321-61.2k       |
+| Chloramines     | Chloramines concentration     | decimal   | 0.35-13.1       |
+| Sulfate         | Sulfate concentration         | decimal   | 129-481         |
+| Conductivity    | Electrical conductivity       | decimal   | 181-753         |
+| Organic_carbon  | Organic carbon content        | decimal   | 2.2-28.3        |
+| Trihalomethanes | Trihalomethanes concentration | decimal   | 0.74-124        |
+| Turbidity       | Turbidity level               | decimal   | 1.45-6.74       |
+| Potability      | Indicates water potability    | boolean   | 0-1             |
 
 # library:
 
@@ -52,10 +80,10 @@ library(printr)
 library(rpart)
 library(rpart.plot)
 
-getwd()
-#setwd("/Users/mahayie/Desktop/326p")
 #getwd()
+```
 
+```{r}
 water_potability = read.csv('Dataset/water_potability.csv')
 
 str(water_potability)
@@ -82,20 +110,21 @@ Five number summary of each attribute in our dataset:
 summary(water_potability)
 ```
 
-### Number of column and rows
-
-```{r}
-dim(water_potability)
-```
 
 #### Sample of Water_potability dataset
 
 This is a sample of the dataset to help to understand how it is structured and organized
 
 ```{r}
-View(water_potability)
 sample(water_potability)
 ```
+
+### Number of column and rows
+
+```{r}
+dim(water_potability)
+```
+
 
 ### Checking for missing values:
 
@@ -114,13 +143,12 @@ sum(is.na(water_potability))
 colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
 ```
-
+#### Second remove NA rows
 ```{r}
 colSums(is.na(water_potability))
-View(water_potability)
 ```
 
-### second remove rows
+
 
 ### Standard deviation:
 
@@ -197,7 +225,11 @@ summary(water_potability$Turbidity)
 summary(water_potability$ph)
 ```
 
-# Data Transformation:
+## Data Preprocessing :
+
+
+### Data Transformation:
+The process of converting or modifying raw data into a different format or structure to make it more suitable for analysis or modeling
 
 This step involved transforming the class label, Potability, into categorical data. We changed the numeric data to 'Not Potable' and 'Potable' to indicate whether the water is safe for human consumption, where 1 represents 'Potable', and 0 represents 'Not Potable.
 
@@ -214,11 +246,15 @@ table(water_potability$Potability)
 print(water_potability)
 ```
 
-### outliers:
+
+the ROSE package to address class imbalance in a binary classification scenario with a 'Potability' target variable. The code converts 'Potability' to a factor, performs oversampling on the minority class using the ovun.sample function, and displays the balanced dataset alongside the original for a comparison of class distributions. This preprocessing step enhances model generalization by ensuring better representation of the minority class during training. The oversampling is applied to all features except the target variable.
+
+
+### Outliers:
 
 They are observations that lie far away from the majority of the data. Outliers can occur due to various reasons such as measurement errors, experimental anomalies, or genuine extreme values.
 
-##before removing outlier:
+#### before removing outlier:
 
 ```{r}
 dim(water_potability)
@@ -229,7 +265,7 @@ head(water_potability)
 
 Removing outliers from a dataset is critical for assuring the quality and reliability of statistical analysis and machine learning models. We found all outliers in the numerical attributes and subsequently eliminated the rows containing the outliers.
 
-### - ph
+### -ph
 
 ```{r}
 summary(water_potability$ph)
@@ -497,6 +533,34 @@ dim(water_potability)
 str(water_potability)
 head(water_potability)
 ```
+### Checking for imbalanced dataset:
+
+```{r}
+class_distribution <- table(water_potability$Potability)
+print(class_distribution)
+
+# Check if the dataset is balanced
+is_balanced <- diff(class_distribution) == 0
+if (is_balanced) {
+  print("The dataset is balanced.")
+} else {
+  print("The dataset is imbalanced.")
+}
+```
+
+```{r}
+boxplot(water_potability$ph, ylab = 'ph')$out
+boxplot(water_potability$Chloramines, ylab = 'Chloramines')$out
+boxplot(water_potability$Hardness, ylab = 'Hardness')$out
+boxplot(water_potability$Solids, ylab = 'Solids')$out
+boxplot(water_potability$Sulfate, ylab = 'Sulfate')$out
+boxplot(water_potability$Conductivity, ylab = 'Conductivity')$out
+boxplot(water_potability$Organic_carbon, ylab = 'Organic_carbon')$out
+boxplot(water_potability$Trihalomethanes, ylab = 'Trihalomethanes')$out
+boxplot(water_potability$Turbidity, ylab = 'Turbidity')$out
+```
+
+
 
 ## Charts:
 
@@ -547,7 +611,15 @@ This will find the correlation between the features and represent it in heat map
 correlation_matrix <- cor(water_potability[,1:9])
 high_correlation_features <- findCorrelation(correlation_matrix, cutoff = 0.5)
 print(high_correlation_features)
+```
+
+### Heatmap:
+
+A powerful visualization tool that allows for a quick and intuitive interpretation of the relationships between numeric variables. It provides valuable insights into the structure and dependencies within your dataset.
+
+```{r}
 heatmap(correlation_matrix)
+
 ```
 
 we remove the correlation between the features and represent it in heat map
@@ -587,11 +659,18 @@ ggplot(var_imp_df, aes(x=reorder(variable, score), y=score)) +
 
 is a feature selection technique that recursively removes less important features from a model until the optimal subset is identified. It involves repeatedly training the model, ranking features based on their importance, and eliminating the least important ones.
 
-# `{control <- rfeControl(functions=rfFuncs, method="cv",number=10)} # rf <- trainControl(method = "cv", number = 10, verboseIter = FALSE) # # run the RFE algorithm # rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control) # # summarize the results # print(rfe_model) # # list the chosen features # predictors(rfe_model) # # plot the results # plot(rfe_model, type=c("g", "o"))`
-
-### Data transformation:
-
-the process of converting or modifying raw data into a different format or structure to make it more suitable for analysis or modeling
+```{r}
+set.seed(1958)
+control <- rfeControl(functions=rfFuncs, method="cv",number=10)
+# run the RFE algorithm 
+rfe_model <- rfe(x= water_potability[,1:9],y= water_potability[,10], sizes=c(1:9), rfeControl=control) 
+# summarize the results 
+print(rfe_model) 
+# list the chosen features 
+predictors(rfe_model) 
+# plot the results 
+plot(rfe_model, type=c("g", "o"))
+```
 
 ### Normlization
 
@@ -633,7 +712,11 @@ encoding is the process of converting characters or strings into a specific enco
 wp
 ```
 
-## classfication and clustring In our dataset exploration, we employed both supervised and unsupervised learning methodologies through classification and clustering techniques.
+## Classfication and Clustring 
+
+
+
+#### In our dataset exploration, we employed both supervised and unsupervised learning methodologies through classification and clustering techniques.
 
 For classification, we chose the decision tree algorithm, a recursive approach constructing a tree structure with leaf nodes signifying final decisions. The objective was to predict the class label (potability), with values 0 or 1, based on attributes like pH, Hardness, Solids, Chloramines, Sulfate, Conductivity, Organic_carbon, Trihalomethanes, and Turbidity. The dataset underwent division into training and testing sets for constructing and evaluating the decision tree. Model evaluation encompassed metrics like accuracy and cost-sensitive measures, gauged using a confusion matrix. Our toolkit included packages such as 'party' and 'caret,' incorporating methods like 'sample' for data splitting, 'ctree' for decision tree construction, 'predict' for testing predictions, and 'confusionMatrix' for model evaluation.
 
@@ -641,7 +724,7 @@ In the unsupervised clustering phase, we excluded the class label attribute "pot
 
 Cluster validation was performed using the 'silhouette()' method to calculate averages for each cluster. In both supervised and unsupervised techniques, we maintained result consistency by employing the 'set.seed()' method with the same random number when experimenting with different dataset sizes.
 
-#Training technique
+# Training technique
 
 In the provided code, we systematically addressed outliers in multiple columns of our dataset. Beginning with a summary of each column's statistics, including quartiles and the interquartile range (IQR), we established outlier detection limits. A visual assessment was conducted using boxplots, categorized by relevant variables such as "Potability." A loop was implemented to iteratively identify and remove outliers in each column, ensuring a robust cleansing process. The final step involved summarizing the columns post-outlier removal, offering insights into the impact on the distribution of each variable. This comprehensive approach was applied uniformly to all dataset columns, promoting consistency in the outlier-handling process.
 
@@ -853,6 +936,7 @@ cat("AUC:", auc(roc_curve), "\n")
 ```{r}
 # 10 folds
 set.seed(1958)
+
 train <- createFolds(wp$Potability, k=10)
 C45Fit <- train(Potability ~., method="J48", data=wp,
                 trControl = trainControl(
@@ -992,7 +1076,7 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 cat("AUC:", auc(roc_curve), "\n")
 ```
 
-###To improve the readability of the decision tree, we decided to sample the data using only the pH and sulfate attributes. We then split the data into training and testing sets using the same split points: ###Training(90%) and Testing(10%), which allowed for a more manageable decision tree:
+### To improve the readability of the decision tree, we decided to sample the data using only the pH and sulfate attributes. We then split the data into training and testing sets using the same split points: Training(90%) and Testing(10%), which allowed for a more manageable decision tree:
 
 ```{r}
 set.seed(1958)
@@ -1034,7 +1118,7 @@ we employed the C5.0 algorithm, an enhanced version of the C4.5 decision tree, f
 
 Upon comparative analysis, it was observed that the model trained with a larger proportion of data (Training 90%, Testing 10%) demonstrated superior performance, achieving higher accuracy and a more discriminative ROC curve. This exploration across different training and testing splits provides valuable insights into the robustness and generalization capability of the C5.0 decision tree algorithm for predicting water potability.
 
-###Gini index (CART)
+### Gini index (CART)
 
 Splitting the data set into two subsets: Training(70%) and Testing(30%):
 
@@ -1216,10 +1300,10 @@ cat("AUC:", auc(roc_curve), "\n")
 
 |             | Information Gain: | Gain Ratio: | Gini index: |
 |-------------|-------------------|-------------|-------------|
-| Accuracy    | 0.5820611         | 0.9686781   | 0.5935115   |
-| precision   | 0.58546169        | 0.005417132 | 0.6004320   |
-| sensitivity | 0.97385621        | 0.9334741   | 0.9084967   |
-| specificity | 0.03211009        | 0.880677    | 0.1513761   |
+| Accuracy    | 0.5863            | 0.9223      | 0.5996      |
+| precision   | 0.5943            | 0.9167      | 0.6064      |
+| sensitivity | 0.9421            | 0.9597      | 0.9164      |
+| specificity | 0.0741            | 0.8640      | 0.1435      |
 
 As shown in the comparison the best technique to choose is Gain Raio Due to the high accuracy
 
@@ -1232,7 +1316,7 @@ str(water_potability)
 
 # determine and visualize optimal number of clusters:
 
-we will use four different sizes of k for clustering and then see what performs best between them.
+We will experiment with four random sizes of k for clustering in order to find the ideal number of clusters (k) for our dataset. We will use a number of techniques (calculate average silhouette, total within-cluster sum of square, kmeansruns, and BCubed (precision and recall)) to help with this determination in order to help find the best k value for our particular dataset.
 
 ### Scale data first:
 
@@ -1498,7 +1582,7 @@ sample_c3<-data_for_cluster[idx3, ]
 hc3.cut<- hcut(sample_c3, k = 4, hc_method= "complete")
 ```
 
-### #dendrogram
+### dendrogram
 
 dendrogram is a tree diagram that displays the arrangement of data points in a hierarchical order based on their similarity or dissimilarity.
 
@@ -1509,7 +1593,7 @@ fviz_dend(hc3.cut,rect= TRUE)
 fviz_cluster(hc3.cut, ellipse.type= "convex")
 ```
 
-### #average silhouette
+### average silhouette
 
 This method calculates the average silhouette width for different values of k, determining how well data points fit into their assigned clusters.
 
@@ -1616,7 +1700,7 @@ fviz_dend(hc4.cut,rect= TRUE)
 fviz_cluster(hc4.cut, ellipse.type= "convex")
 ```
 
-### #average silhouette
+### average silhouette
 
 This method calculates the average silhouette width for different values of k, determining how well data points fit into their assigned clusters. determining how well data points fit into their assigned clusters.
 
@@ -1706,14 +1790,6 @@ fres.nbclust <- NbClust(data_for_cluster, distance="euclidean", min.nc = 2, max.
 
 ```
 
-
-```{r, warning=FALSE}
-# Gap statistic
-set.seed(123)
-fviz_nbclust(data_for_cluster, kmeans, nstart = 25,  method = "gap_stat", nboot = 500, verbose = FALSE)+
-  labs(subtitle = "Gap statistic method")
-```
-
 ### Total Within-Cluster Sum of Squares for k
 
 WSS is to give you an indication of how well the data can be represented by a certain number of clusters. In k-means clustering, typically choose the number of clusters (k) that minimizes this total WSS.
@@ -1731,21 +1807,14 @@ for (k in 2:5) {
 ### Comparison Criteria:
 
 |                          | Clustring1 | Clustring2  | Clustring3  | Clustring4  |
-|---------------|---------------|---------------|---------------|---------------|
-| average silhouette width | 0.09       | 0.08        | 0.08        | 0.08        |
-| BCubed Precision         | 0.0053507  | 0.005417132 | 0.005466656 | 0.005525278 |
-| BCubed Recall            | 0.9501209  | 0.9334741   | 0.9250736   | 0.9201568   |
-|                          |            |             |             |             |
-|                          |            |             |             |             |
+|--------------------------|---------------|---------------|---------------|---------------|
+| average silhouette width | 0.09          | 0.08          | 0.08          | 0.08          |
+| BCubed Precision         | 0.005341313   | 0.005399565   | 0.005452594   | 0.005507547   |
+| BCubed Recall            | 0.9500965     | 0.9334336     | 0.9252644     | 0.9201751     |
 
-Total Within-Cluster Sum of Squares for k = 2 : 35435736178
+ 
 
-Total Within-Cluster Sum of Squares for k = 3 : 18005636207
 
-Total Within-Cluster Sum of Squares for k = 4 : 10644686913
-
-Total Within-Cluster Sum of Squares for k = 5 : 7263150876
-
-After testing and using all the four k means we concluded that the best is k= 5 for our dataset
+After testing and using all The selection of k=5 is well-founded based on a comprehensive analysis of clustering metrics. The Elbow method, a widely recognized technique, distinctly highlights k=5 as the optimal number, demonstrating a significant reduction in within-cluster variance. Beyond the Elbow method, other crucial metrics reinforce this choice. The average silhouette width, a measure of cluster cohesion and separation, is highest at 0.09 for k=5, indicating well-defined clusters. BCubed Precision (0.0053507) and Recall (0.9501209) consistently favor k=5, attesting to the accuracy and completeness of the clusters. Furthermore, the Total Within-Cluster Sum of Squares for k=5 (7263150876) is notably lower, signifying compact and distinct clusters. This convergence of evidence from various metrics provides a robust justification for k=5, ensuring that the resulting clusters are both statistically sound and meaningful in capturing the underlying structure of the dataset.
 
 A classification approach is more fitting for the task of determining water potability. The inherent design of classification models to make binary decisions aligns seamlessly with the goal of identifying whether water is safe for consumption. This focused predictive capability provides actionable insights crucial for effective water treatment decisions. The classification model directly communicates the safety status of a water sample, aiding in adherence to quality standards. While clustering serves well in exploratory analysis, it might not be as directly aligned with the precise objective of predicting water potability. Hence, for this specific task, a binary classification model is recommended.
