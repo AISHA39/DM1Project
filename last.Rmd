@@ -21,19 +21,19 @@ We are collecting a dataset on water quality to train a machine learning model f
 
 ### Data
 
-### Source of the dataset:
+#### Source of the dataset:
 
 Kaggle
 
-### Link of the dataset:
+#### Link of the dataset:
 
 [Water Quality and Potability](https://www.kaggle.com/datasets/uom190346a/water-quality-and-potability)
 
-### Information about the dataset
+#### Information about the dataset
 
 it is contains 10 attributes, 3276 objects, and the class label for our dataset is Potability.
 
-### Attribute information
+#### Attribute information
 
 +-----------------+-------------------------------+--------------+-----------------+
 | Attribute       | Description                   | Data Type    | Possible Values |
