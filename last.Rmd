@@ -197,7 +197,6 @@ table(water_potability$Potability)
 print(water_potability)
 ```
 
-the ROSE package to address class imbalance in a binary classification scenario with a 'Potability' target variable. The code converts 'Potability' to a factor, performs oversampling on the minority class using the ovun.sample function, and displays the balanced dataset alongside the original for a comparison of class distributions. This preprocessing step enhances model generalization by ensuring better representation of the minority class during training. The oversampling is applied to all features except the target variable.
 
 ### Outliers:
 
