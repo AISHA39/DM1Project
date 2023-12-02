@@ -59,7 +59,7 @@ it is contains 10 attributes, 3276 objects, and the class label for our dataset 
 | Potability      | Indicates water potability    | boolean      | 0-1             |
 +-----------------+-------------------------------+--------------+-----------------+
 
-# library:
+# Library:
 
 ```{r}
 #install.packages("caret")
@@ -156,62 +156,6 @@ water_potability = na.omit(water_potability)
 ```{r}
 colSums(is.na(water_potability))
 ```
-
-### Standard deviation:
-
-The standard deviation in statistics is a measure used to assess the spread of data around the mean. It gives us an idea of how much the data points deviate from the average.
-
-```{r}
-sd(water_potability$Turbidity)
-sd(water_potability$Solids)
-sd(water_potability$Conductivity)
-sd(water_potability$Organic_carbon)
-sd(water_potability$ph)
-```
-
-we ues it for five coulme Turbidity,Solids,Conductivity,Organic_carbon,ph.
-
-### Mean:
-
-the average, is a measure of central tendency in statistics. It is calculated by summing up all the values in a dataset and dividing by the number of values. The mean gives us a representative value that is typically used to describe the "typical" value in a set of data.
-
-```{r}
-mean(water_potability$Turbidity)
-mean(water_potability$Solids) 
-mean(water_potability$Conductivity) 
-mean(water_potability$Organic_carbon) 
-mean(water_potability$ph) 
-```
-
-we ues it for five coulme Turbidity,Solids,Conductivity,Organic_carbon,ph.
-
-### Median:
-
-It represents the middle value in a dataset when the values are arranged in ascending or descending order.
-
-```{r}
-median(water_potability$Turbidity)
-median(water_potability$Solids)
-median(water_potability$Conductivity)
-median(water_potability$Organic_carbon)
-median(water_potability$ph)
-```
-
-we ues it for five coulme Turbidity,Solids,Conductivity,Organic_carbon,ph.
-
-### Variance:
-
-It provides information about how far each value in the dataset is from the mean. A higher variance indicates a greater spread of data, while a lower variance suggests that the data points are closer to the mean.
-
-```{r}
-var(water_potability$Turbidity)
-var(water_potability$Solids)
-var(water_potability$Conductivity)
-var(water_potability$Organic_carbon)
-var(water_potability$ph)
-```
-
-As you can see the highest Variance Solids, and the lowest Turbidity.
 
 ### Statistical Measures:
 
@@ -609,7 +553,7 @@ with(water_potability, plot(Trihalomethanes, ph, col = Potability, pch = as.nume
 
 ### Remove Redundant Features:
 
-This will find the correlation between the features and represent it in heat map
+This will find the correlation between the features and represent it in heatmap
 
 ```{r}
 correlation_matrix <- cor(water_potability[,1:9])
