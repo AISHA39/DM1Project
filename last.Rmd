@@ -91,7 +91,8 @@ library(printr)
 library(rpart)
 library(rpart.plot)
 
-#getwd()
+getwd()
+#setwd("/Users/mahayie/Documents/GitHub/DM1Project")
 ```
 
 ```{r}
@@ -731,6 +732,8 @@ Cluster validation was performed using the 'silhouette()' method to calculate av
 # Training technique
 
 In the provided code, we systematically addressed outliers in multiple columns of our dataset. Beginning with a summary of each column's statistics, including quartiles and the interquartile range (IQR), we established outlier detection limits. A visual assessment was conducted using boxplots, categorized by relevant variables such as "Potability." A loop was implemented to iteratively identify and remove outliers in each column, ensuring a robust cleansing process. The final step involved summarizing the columns post-outlier removal, offering insights into the impact on the distribution of each variable. This comprehensive approach was applied uniformly to all dataset columns, promoting consistency in the outlier-handling process.
+
+## Evaluation and Comparison
 
 ### Information gain (ID3)
 
@@ -2200,7 +2203,7 @@ However, according to WSS (Total Within-Cluster Sum of Squares), the model with 
 
 After conducting tests and analysis, we found that our dataset's optimal number of clusters is K=5. We used the Elbow method and other metrics such as silhouette width score of 0.8, BCubed precision of 0.005507547, recall score of 0.9201751, and Total Within-Cluster Sum of Squares 7332617467 to support our conclusion.
 
-Finally, both models help predict whether the water is potable and allow us to reach our goal, assisting people to take precautions if they threaten to get positioned. However, since our data contains a class label "Potability," this makes supervised learning models (Classification) more accurate and suitable to apply than unsupervised learning models (Clustering), as the expected output is known beforehand. This way, we make use of the class label attribute.
+Finally, both models help predict whether the water is potable and allow us to reach our goal, assisting people to take precautions if they threaten to get positioned. However, since our data contains a class label "Potability," this makes supervised learning models Classification more accurate and suitable to apply than unsupervised learning models Clustering, as the expected output is known beforehand. This way, we make use of the class label attribute.
 
 ### References
 
