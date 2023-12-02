@@ -138,7 +138,7 @@ colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
 ```
 
-#### Second checking the removal of NA rows
+#### Second checking of the removal of NA rows
 
 ```{r}
 colSums(is.na(water_potability))
