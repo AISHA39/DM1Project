@@ -1,9 +1,6 @@
 ---
 title: "Water Quality and Potability"
-output: html_document:
-    df_print: paged
-  html_notebook: default
-  pdf_document: default
+output: html_notebook
 ---
 
 ## This code is running using R notebook in RStudio
