@@ -38,18 +38,29 @@ it is contains 10 attributes, 3276 objects, and the class label for our dataset 
 
 ### Attribute information
 
-| Attribute       | Description                   | Data Type | Possible Values |
-|-----------------|-------------------------------|-----------|-----------------|
-| ph              | pH level of water             | decimal   | 0-14            |
-| Hardness        | Water hardness in water       | decimal   | 47.4-323        |
-| Solids          | Dissolved solids in water     | decimal   | 321-61.2k       |
-| Chloramines     | Chloramines concentration     | decimal   | 0.35-13.1       |
-| Sulfate         | Sulfate concentration         | decimal   | 129-481         |
-| Conductivity    | Electrical conductivity       | decimal   | 181-753         |
-| Organic_carbon  | Organic carbon content        | decimal   | 2.2-28.3        |
-| Trihalomethanes | Trihalomethanes concentration | decimal   | 0.74-124        |
-| Turbidity       | Turbidity level               | decimal   | 1.45-6.74       |
-| Potability      | Indicates water potability    | boolean   | 0-1             |
++-----------------+-------------------------------+--------------+-----------------+
+| Attribute       | Description                   | Data Type    | Possible Values |
++=================+===============================+==============+=================+
+| ph              | pH level of water             | decimal      | 0-14            |
++-----------------+-------------------------------+--------------+-----------------+
+| Hardness        | Water hardness in water       | decimal      | 47.4-323        |
++-----------------+-------------------------------+--------------+-----------------+
+| Solids          | Dissolved solids in water     | decimal      | 321-61.2k       |
++-----------------+-------------------------------+--------------+-----------------+
+| Chloramines     | Chloramines concentration     | decimal      | 0.35-13.1       |
++-----------------+-------------------------------+--------------+-----------------+
+| Sulfate         | Sulfate concentration         | decimal      | 129-481         |
++-----------------+-------------------------------+--------------+-----------------+
+| Conductivity    | Electrical conductivity       | decimal      | 181-753         |
++-----------------+-------------------------------+--------------+-----------------+
+| Organic_carbon  | Organic carbon content        | decimal      | 2.2-28.3        |
++-----------------+-------------------------------+--------------+-----------------+
+| Trihalomethanes | Trihalomethanes concentration | decimal      | 0.74-124        |
++-----------------+-------------------------------+--------------+-----------------+
+| Turbidity       | Turbidity level               | decimal      | 1.45-6.74       |
++-----------------+-------------------------------+--------------+-----------------+
+| Potability      | Indicates water potability    | boolean      | 0-1             |
++-----------------+-------------------------------+--------------+-----------------+
 
 # library:
 
@@ -1833,12 +1844,17 @@ for (k in 2:5) {
 
 ### Comparison Criteria:
 
++------------------------------------+-------------+-------------+-------------+-------------+
 |                                    | Clustring1  | Clustring2  | Clustring3  | Clustring4  |
-|------------------------------------|-------------|-------------|-------------|-------------|
++====================================+=============+=============+=============+=============+
 | average silhouette width           | 0.09        | 0.08        | 0.08        | 0.08        |
++------------------------------------+-------------+-------------+-------------+-------------+
 | total within-cluster sum of square | 35783784875 | 18188054859 | 10763906537 | 7332617467  |
++------------------------------------+-------------+-------------+-------------+-------------+
 | BCubed Precision                   | 0.005341313 | 0.005399565 | 0.005452594 | 0.005507547 |
++------------------------------------+-------------+-------------+-------------+-------------+
 | BCubed Recall                      | 0.9500965   | 0.9334336   | 0.9252644   | 0.9201751   |
++------------------------------------+-------------+-------------+-------------+-------------+
 
 After testing and using all The selection of k=5 is well-founded based on a comprehensive analysis of clustering metrics. The Elbow method, a widely recognized technique, distinctly highlights k=5 as the optimal number, demonstrating a significant reduction in within-cluster variance. Beyond the Elbow method, other crucial metrics reinforce this choice. The average silhouette width, a measure of cluster cohesion and separation, is highest at 0.09 for k=5, indicating well-defined clusters. BCubed Precision (0.0053507) and Recall (0.9501209) consistently favor k=5, attesting to the accuracy and completeness of the clusters. Furthermore, the Total Within-Cluster Sum of Squares for k=5 (7263150876) is notably lower, signifying compact and distinct clusters. This convergence of evidence from various metrics provides a robust justification for k=5, ensuring that the resulting clusters are both statistically sound and meaningful in capturing the underlying structure of the dataset.
 
