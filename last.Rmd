@@ -38,18 +38,29 @@ it is contains 10 attributes, 3276 objects, and the class label for our dataset 
 
 ### Attribute information
 
-| Attribute       | Description                   | Data Type | Possible Values |
-|----------------|-------------------------|----------------|-----------------|
-| ph              | pH level of water             | decimal   | 0-14            |
-| Hardness        | Water hardness in water       | decimal   | 47.4-323        |
-| Solids          | Dissolved solids in water     | decimal   | 321-61.2k       |
-| Chloramines     | Chloramines concentration     | decimal   | 0.35-13.1       |
-| Sulfate         | Sulfate concentration         | decimal   | 129-481         |
-| Conductivity    | Electrical conductivity       | decimal   | 181-753         |
-| Organic_carbon  | Organic carbon content        | decimal   | 2.2-28.3        |
-| Trihalomethanes | Trihalomethanes concentration | decimal   | 0.74-124        |
-| Turbidity       | Turbidity level               | decimal   | 1.45-6.74       |
-| Potability      | Indicates water potability    | boolean   | 0-1             |
++-----------------+-------------------------------+---------------+-----------------+
+| Attribute       | Description                   | Data Type     | Possible Values |
++=================+===============================+===============+=================+
+| ph              | pH level of water             | decimal       | 0-14            |
++-----------------+-------------------------------+---------------+-----------------+
+| Hardness        | Water hardness in water       | decimal       | 47.4-323        |
++-----------------+-------------------------------+---------------+-----------------+
+| Solids          | Dissolved solids in water     | decimal       | 321-61.2k       |
++-----------------+-------------------------------+---------------+-----------------+
+| Chloramines     | Chloramines concentration     | decimal       | 0.35-13.1       |
++-----------------+-------------------------------+---------------+-----------------+
+| Sulfate         | Sulfate concentration         | decimal       | 129-481         |
++-----------------+-------------------------------+---------------+-----------------+
+| Conductivity    | Electrical conductivity       | decimal       | 181-753         |
++-----------------+-------------------------------+---------------+-----------------+
+| Organic_carbon  | Organic carbon content        | decimal       | 2.2-28.3        |
++-----------------+-------------------------------+---------------+-----------------+
+| Trihalomethanes | Trihalomethanes concentration | decimal       | 0.74-124        |
++-----------------+-------------------------------+---------------+-----------------+
+| Turbidity       | Turbidity level               | decimal       | 1.45-6.74       |
++-----------------+-------------------------------+---------------+-----------------+
+| Potability      | Indicates water potability    | boolean       | 0-1             |
++-----------------+-------------------------------+---------------+-----------------+
 
 # library:
 
@@ -110,7 +121,6 @@ Five number summary of each attribute in our dataset:
 summary(water_potability)
 ```
 
-
 #### Sample of Water_potability dataset
 
 This is a sample of the dataset to help to understand how it is structured and organized
@@ -124,7 +134,6 @@ sample(water_potability)
 ```{r}
 dim(water_potability)
 ```
-
 
 ### Checking for missing values:
 
@@ -143,12 +152,12 @@ sum(is.na(water_potability))
 colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
 ```
+
 #### Second remove NA rows
+
 ```{r}
 colSums(is.na(water_potability))
 ```
-
-
 
 ### Standard deviation:
 
@@ -227,8 +236,8 @@ summary(water_potability$ph)
 
 ## Data Preprocessing :
 
-
 ### Data Transformation:
+
 The process of converting or modifying raw data into a different format or structure to make it more suitable for analysis or modeling
 
 This step involved transforming the class label, Potability, into categorical data. We changed the numeric data to 'Not Potable' and 'Potable' to indicate whether the water is safe for human consumption, where 1 represents 'Potable', and 0 represents 'Not Potable.
@@ -246,9 +255,7 @@ table(water_potability$Potability)
 print(water_potability)
 ```
 
-
 the ROSE package to address class imbalance in a binary classification scenario with a 'Potability' target variable. The code converts 'Potability' to a factor, performs oversampling on the minority class using the ovun.sample function, and displays the balanced dataset alongside the original for a comparison of class distributions. This preprocessing step enhances model generalization by ensuring better representation of the minority class during training. The oversampling is applied to all features except the target variable.
-
 
 ### Outliers:
 
@@ -533,6 +540,7 @@ dim(water_potability)
 str(water_potability)
 head(water_potability)
 ```
+
 ### Checking for imbalanced dataset:
 
 ```{r}
@@ -559,8 +567,6 @@ boxplot(water_potability$Organic_carbon, ylab = 'Organic_carbon')$out
 boxplot(water_potability$Trihalomethanes, ylab = 'Trihalomethanes')$out
 boxplot(water_potability$Turbidity, ylab = 'Turbidity')$out
 ```
-
-
 
 ## Charts:
 
@@ -712,9 +718,7 @@ encoding is the process of converting characters or strings into a specific enco
 wp
 ```
 
-## Classfication and Clustring 
-
-
+## Classfication and Clustring
 
 #### In our dataset exploration, we employed both supervised and unsupervised learning methodologies through classification and clustering techniques.
 
@@ -1298,12 +1302,46 @@ cat("AUC:", auc(roc_curve), "\n")
 
 ### Comparison Criteria:
 
-|             | Information Gain: | Gain Ratio: | Gini index: |
+#### For each  Information Gain, Gain Ratio(5.0), and Gini index splitting the data set into two subsets:
+
+##### Training(90%) and Testing(10%):
+
+|             | Information Gain  | Gain Ratio  | Gini index  |
 |-------------|-------------------|-------------|-------------|
-| Accuracy    | 0.5863            | 0.9223      | 0.5996      |
-| precision   | 0.5943            | 0.9167      | 0.6064      |
-| sensitivity | 0.9421            | 0.9597      | 0.9164      |
-| specificity | 0.0741            | 0.8640      | 0.1435      |
+| Accuracy    | 56.49%            | 62.14%      | 56.50%      |
+| precision   | 58.71%            | 62.59%      | 58.60%      |
+| sensitivity | 87.50%            | 88.46%      | 58.60%      |
+| specificity | 12.33%            | 24.66%      | 10.96%      |
+
+
+##### Training(80%) and Testing(20%):
+
+|             | Information Gain  | Gain Ratio  | Gini index  |
+|-------------|-------------------|-------------|-------------|
+| Accuracy    | 57.42%            | 56.86%      | 57.70%      |
+| precision   | 57.14%            | 56.93%      | 57.40%      |
+| sensitivity | 96%               | 94.50%      | 95%         |
+| specificity | 8.28%             | 8.92%       | 10.19%      |
+
+
+##### Training(70%) and Testing(30%):
+
+|             | Information Gain  | Gain Ratio  | Gini index  |
+|-------------|-------------------|-------------|-------------|
+| Accuracy    | 58.63%            | 59.01%      | 59.96%      |
+| precision   | 59.43%            | 59.79%      | 60.64%      |
+| sensitivity | 94.21%            | 93.25%      | 91.64%      |
+| specificity | 7.41%             | 9.72%      | 14.35%      |
+
+
+#### For Gain Ratio(4.5) with K-folds:
+
+|             | K=3               | K=5         | K=10        |
+|-------------|-------------------|-------------|-------------|
+| Accuracy    | 62.17%            | 62.17%      | 92.23%      |
+| precision   | 58.71%            | 61.83%      | 91.67%      |
+| sensitivity | 99.06%            | 99.06%      | 95.97%      |
+| specificity | 4.68%             | 4.68%       | 86.40%      |
 
 As shown in the comparison the best technique to choose is Gain Raio Due to the high accuracy
 
@@ -1806,14 +1844,17 @@ for (k in 2:5) {
 
 ### Comparison Criteria:
 
-|                          | Clustring1 | Clustring2  | Clustring3  | Clustring4  |
-|--------------------------|---------------|---------------|---------------|---------------|
-| average silhouette width | 0.09          | 0.08          | 0.08          | 0.08          |
-| BCubed Precision         | 0.005341313   | 0.005399565   | 0.005452594   | 0.005507547   |
-| BCubed Recall            | 0.9500965     | 0.9334336     | 0.9252644     | 0.9201751     |
-
- 
-
++-------------------------------------+-------------+-------------+-------------+-------------+
+|                                     | Clustring1  | Clustring2  | Clustring3  | Clustring4  |
++=====================================+=============+=============+=============+=============+
+| average silhouette width            | 0.09        | 0.08        | 0.08        | 0.08        |
++-------------------------------------+-------------+-------------+-------------+-------------+
+| total within-cluster sum of square  | 0.09        | 0.08        | 0.08        | 0.08        |
++-------------------------------------+-------------+-------------+-------------+-------------+
+| BCubed Precision                    | 0.005341313 | 0.005399565 | 0.005452594 | 0.005507547 |
++-------------------------------------+-------------+-------------+-------------+-------------+
+| BCubed Recall                       | 0.9500965   | 0.9334336   | 0.9252644   | 0.9201751   |
++-------------------------------------+-------------+-------------+-------------+-------------+
 
 After testing and using all The selection of k=5 is well-founded based on a comprehensive analysis of clustering metrics. The Elbow method, a widely recognized technique, distinctly highlights k=5 as the optimal number, demonstrating a significant reduction in within-cluster variance. Beyond the Elbow method, other crucial metrics reinforce this choice. The average silhouette width, a measure of cluster cohesion and separation, is highest at 0.09 for k=5, indicating well-defined clusters. BCubed Precision (0.0053507) and Recall (0.9501209) consistently favor k=5, attesting to the accuracy and completeness of the clusters. Furthermore, the Total Within-Cluster Sum of Squares for k=5 (7263150876) is notably lower, signifying compact and distinct clusters. This convergence of evidence from various metrics provides a robust justification for k=5, ensuring that the resulting clusters are both statistically sound and meaningful in capturing the underlying structure of the dataset.
 
@@ -2117,7 +2158,7 @@ Also, we applied data transformation, so we normalized and discretized some attr
 
 For classification, we use the decision tree method to construct our model. We tried four algorithms with three different sizes each of training and testing data to get the best result for construction and evaluation, and we concluded the following results:
 
-![](Image/Clustering/all class.png){width="550"}
+![](Image/Clustering/all%20class.png){width="550"}
 
 The model with the best accuracy was the Gain ratio algorithm with 10 K-fold, meaning that most tuples were correctly classified.
 
@@ -2147,7 +2188,7 @@ This level of detail provides valuable insights into the factors contributing to
 
 For Clustering, we used the K-means algorithm with four different Ks to find the optimal number of clusters. We calculated the average silhouette width for each cluster and other metrics, and we concluded the following results:
 
-![](Image/Clustering/all cluster.png){width="500"}
+![](Image/Clustering/all%20cluster.png){width="500"}
 
 The model with the optimal number of clusters is K = 2 since it has the best average silhouette width, meaning that objects within the same cluster are close to each other and, as far as possible, to the objects in the other cluster.
 
@@ -2174,4 +2215,3 @@ Finally, both models help predict whether the water is potable and allow us to r
 [5] Prabhudev Konana, "Classification using RStudio," *YouTube*, Apr. 11, 2016. <https://www.youtube.com/watch?v=ImbXdYrT59s>
 
 [6]J. Brownlee, "Feature Selection with the Caret R Package," *MachineLearningMastery.com*, Aug. 22, 2019. <https://machinelearningmastery.com/feature-selection-with-the-caret-r-package/>
-
