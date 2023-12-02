@@ -59,7 +59,7 @@ it is contains 10 attributes, 3276 objects, and the class label for our dataset 
 | Potability      | Indicates water potability    | boolean      | 0-1             |
 +-----------------+-------------------------------+--------------+-----------------+
 
-# Library:
+# library:
 
 ```{r}
 #install.packages("caret")
@@ -98,20 +98,7 @@ water_potability = read.csv('Dataset/water_potability.csv')
 str(water_potability)
 ```
 
-### sample of data
-
-sample of raw dataset(first 10 rows):
-
-```{r}
-
-head(water_potability,10)
-```
-
-sample of raw dataset(last 10 rows):
-
-```{r}
-tail(water_potability, 10)
-```
+### summary of each attribute
 
 Five number summary of each attribute in our dataset:
 
@@ -151,50 +138,30 @@ colSums(is.na(water_potability))
 water_potability = na.omit(water_potability)
 ```
 
-#### Second remove NA rows
+#### Second checking the removal of NA rows
 
 ```{r}
 colSums(is.na(water_potability))
 ```
 
+
 ### Statistical Measures:
 
-### In the given code, you've used the summary function to obtain key statistical measures for variables such as "Conductivity," "Organic_carbon," "Hardness," etc., in the water_potability dataset. These measures include minimum, 1st quartile, median, mean, 3rd quartile, and maximum values, offering a succinct overview of each variable's distribution and characteristics. This provides essential insights for the initial exploration and understanding of the dataset.
+#### In the given code, you've used the summary function to obtain key statistical measures for variables such as "Conductivity," "Organic_carbon," "Hardness," etc., in the water_potability dataset. These measures include minimum, 1st quartile, median, mean, 3rd quartile, and maximum values, offering a succinct overview of each variable's distribution and characteristics. This provides essential insights for the initial exploration and understanding of the dataset.
 
 With using minimum, maximum, mean, median laws it helps to provide an overview of the data's key characteristics
 
 ```{r}
-summary(water_potability$Conductivity)
-summary(water_potability$Organic_carbon)
+summary(water_potability$ph)
 summary(water_potability$Hardness)
 summary(water_potability$Solids)
 summary(water_potability$Chloramines)
-summary(water_potability$Potability)
 summary(water_potability$Sulfate)
+summary(water_potability$Conductivity)
+summary(water_potability$Organic_carbon)
 summary(water_potability$Trihalomethanes)
 summary(water_potability$Turbidity)
-summary(water_potability$ph)
-```
-
-## Data Preprocessing :
-
-### Data Transformation:
-
-The process of converting or modifying raw data into a different format or structure to make it more suitable for analysis or modeling
-
-This step involved transforming the class label, Potability, into categorical data. We changed the numeric data to 'Not Potable' and 'Potable' to indicate whether the water is safe for human consumption, where 1 represents 'Potable', and 0 represents 'Not Potable.
-
-```{r}
-water_potability$Potability[water_potability$Potability == '0'] <- 'Not Potable'
-water_potability$Potability[water_potability$Potability == '1'] <- 'Potable'
-
-water_potability$Potability <- as.factor(water_potability$Potability)
-table(water_potability$Potability)
-
-```
-
-```{r}
-print(water_potability)
+summary(water_potability$Potability)
 ```
 
 
@@ -482,20 +449,6 @@ str(water_potability)
 head(water_potability)
 ```
 
-### Checking for imbalanced dataset:
-
-```{r}
-class_distribution <- table(water_potability$Potability)
-print(class_distribution)
-
-# Check if the dataset is balanced
-is_balanced <- diff(class_distribution) == 0
-if (is_balanced) {
-  print("The dataset is balanced.")
-} else {
-  print("The dataset is imbalanced.")
-}
-```
 
 ## Charts:
 
@@ -538,9 +491,33 @@ This scatter demonstrates the correlation and proportionality between the two qu
 with(water_potability, plot(Trihalomethanes, ph, col = Potability, pch = as.numeric(Potability)))
 ```
 
+
+
+## Data Preprocessing :
+
+### Data Transformation:
+
+The process of converting or modifying raw data into a different format or structure to make it more suitable for analysis or modeling
+
+This step involved transforming the class label, Potability, into categorical data. We changed the numeric data to 'Not Potable' and 'Potable' to indicate whether the water is safe for human consumption, where 1 represents 'Potable', and 0 represents 'Not Potable.
+
+```{r}
+water_potability$Potability[water_potability$Potability == '0'] <- 'Not Potable'
+water_potability$Potability[water_potability$Potability == '1'] <- 'Potable'
+
+water_potability$Potability <- as.factor(water_potability$Potability)
+table(water_potability$Potability)
+
+```
+
+```{r}
+print(water_potability)
+```
+
+
 ### Remove Redundant Features:
 
-This will find the correlation between the features and represent it in heatmap
+This will find the correlation between the features and represent it in heat map
 
 ```{r}
 correlation_matrix <- cor(water_potability[,1:9])
@@ -647,6 +624,23 @@ encoding is the process of converting characters or strings into a specific enco
 wp
 ```
 
+
+### Checking for imbalanced dataset:
+Imbalanced data occurs when one or more classes in a dataset are disproportionately represented, posing challenges for machine learning models. The skewed distribution can lead models to favor the majority class, resulting in poor performance on minority classes. 
+```{r}
+class_distribution <- table(water_potability$Potability)
+print(class_distribution)
+
+# Check if the dataset is balanced
+is_balanced <- diff(class_distribution) == 0
+if (is_balanced) {
+  print("The dataset is balanced.")
+} else {
+  print("The dataset is imbalanced.")
+}
+```
+
+
 ## Classfication and Clustring
 
 #### In our dataset exploration, we employed both supervised and unsupervised learning methodologies through classification and clustering techniques.
@@ -712,6 +706,13 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description: The tree uses nine predictor variables: pH, Hardness,
+Solids, Chloramines, Sulfate, Conductivity, Organic_carbon,
+Trihalomethanes, and Turbidity. The tree has two levels, with Sulfate as
+the root node. The first split is based on different ranges of Sulfate
+levels, dividing them into subranges. The subsequent splits further
+refine predictions based on the remaining variables.The accurace is 58%
+
 
 Splitting the data set into two subsets: Training(80%) and Testing(20%):
 
@@ -753,6 +754,19 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description: employing variables such as pH, hardness, solids,
+chloramines, sulfate, conductivity, organic carbon, trihalomethanes, and
+turbidity to predict water potability. The tree structure indicates that
+sulfate levels play a key role in determining potability, with specific
+ranges leading to predictions of "Potable" or "Not Potable."
+
+Upon evaluation on a test dataset, the confusion matrix reflects that
+all predictions fall into the "Not Potable" class, resulting in
+sensitivity and specificity values of 1.0 and 0.0, respectively. The
+accuracy of the model is approximately 54.90%. The area under the
+receiver operating characteristic (ROC) curve is 0.5
+
+
 
 Splitting the data set into two subsets: Training(90%) and Testing(10%):
 
@@ -793,6 +807,16 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description: predict the potability of water based on various features
+including pH, hardness, solids, chloramines, sulfate, conductivity,
+organic carbon, trihalomethanes, and turbidity. The tree structure
+indicates that the sulfate level plays a crucial role in determining
+water potability, with distinct ranges leading to different outcomes.
+However, the model's performance, as assessed by the confusion matrix,
+shows limitations, particularly in terms of specificity. The accuracy of
+approximately 57.63%
+
+
 
 ### Gain ratio (C4.5)
 
@@ -831,6 +855,22 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description: In our analysis of a water quality dataset with 733 samples
+and 9 predictors, we focused on predicting two classes: 'Not Potable'
+and 'Potable.' The initial dataset distribution revealed 1066 instances
+classified as "Not Potable" and 684 as "Potable," providing an
+understanding of the dataset's composition. For the classification task,
+we opted for a C4.5-like decision tree algorithm. Through systematic
+tuning of parameters (C and M values) and leveraging a 10-fold
+cross-validation approach, we achieved an optimal model with C = 0.01
+and M = 3.
+
+The model's performance was assessed across different folds, with
+accuracy ranging from 55.6% to 61.4%. The resulting decision tree was
+pruned, containing three leaves and a total of five nodes, providing a
+concise yet effective structure for classification.
+
+
 
 ```{r}
 # 5 folds
@@ -867,6 +907,20 @@ cat("AUC:", auc(roc_curve), "\n")
 
 
 ```
+Description: In this analysis, a decision tree model was trained on
+water quality data with two classes, 'Not Potable' and 'Potable,'
+utilizing a 10-fold cross-validated resampling approach. The model's
+performance was assessed across various tuning parameters (C and M
+values). The optimal configuration with the highest accuracy included C
+= 0.01 and M = 1.
+
+The pruned decision tree consisted of three leaves and five nodes,
+primarily using sulfate and pH levels for classification. The AUC (Area
+Under the Curve) was determined to be 0.5226, indicating moderate
+discriminative ability. This model provides insights into water
+potability prediction, offering a concise and interpretable decision
+tree for classifying water samples.
+
 
 ```{r}
 # 10 folds
@@ -901,6 +955,17 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 cat("AUC:", auc(roc_curve), "\n")
 
 ```
+Description:Each node in the tree represents a condition based on
+feature values, and the branches represent the possible outcomes or
+further conditions. The terminal nodes (leaves) provide the final
+classification, such as "Potable" or "Not Potable," along with
+associated probabilities. The conditions involve various water quality
+parameters like conductivity, turbidity, hardness, pH, chloramines,
+organic carbon, sulfate, trihalomethanes, and solids. The tree seems to
+be designed to predict the potability of water based on the given input
+features.
+
+
 
 C5.0 newer version of C4.5 Splitting the data set into two subsets: Training(70%) and Testing(30%):
 
@@ -937,6 +1002,15 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description: The decision tree model predicts water potability based on
+features like sulfate and solids. The initial tree achieved 59.16%
+accuracy, with notable sensitivity (91.83%) but lower specificity
+(13.30%). After pruning, accuracy improved slightly to 59.35%, with
+sensitivity at 90.85% and specificity at 15.14%. The models exhibit
+moderate performance, suggesting room for refinement or exploration of
+alternative approaches.
+
+
 
 Splitting the data set into two subsets: Training(80%) and Testing(20%):
 
@@ -973,6 +1047,16 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description:The decision tree model, initially trained on 80% of the
+data and tested on the remaining 20%, yielded an accuracy of 54.62% on
+the test set. However, the model struggled with specificity, achieving
+only 15.53%. After pruning to prevent overfitting, the accuracy slightly
+increased to 54.90%, but with 0% specificity. The Area Under the Curve
+(AUC) of the ROC curve is 53.13%, indicating limited predictive
+performance. Further model exploration or refinement is suggested for
+improved accuracy.
+
+
 
 Splitting the data set into two subsets: Training(90%) and Testing(10%):
 
@@ -1010,6 +1094,14 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description: The decision tree model, trained on 90% of the data and
+tested on the remaining 10%, exhibited an accuracy of 59.32% on the test
+set. The tree structure indicates that sulfate and solids are important
+variables for determining potability. After pruning, the accuracy
+slightly decreased to 58.76%. The Area Under the Curve (AUC) for the ROC
+curve is 0.5684, suggesting a moderate discriminative ability of the
+model.
+
 
 ### To improve the readability of the decision tree, we decided to sample the data using only the pH and sulfate attributes. We then split the data into training and testing sets using the same split points: Training(90%) and Testing(10%), which allowed for a more manageable decision tree:
 
@@ -1115,6 +1207,14 @@ cat("AUC:", auc(roc_curve), "\n")
 
 
 ```
+Description: The decision tree model, built using the Gini index as the
+splitting criterion and trained on 70% of the data, showed an accuracy
+of 59.16% on the test set. The tree structure indicates that sulfate and
+solids are crucial variables for determining potability. After pruning,
+the accuracy slightly increased to 59.35%. The Area Under the Curve
+(AUC) for the ROC curve is 0.5509
+
+
 
 Splitting the data set into two subsets: Training(80%) and Testing(20%):
 
@@ -1173,6 +1273,18 @@ cat("AUC:", auc(roc_curve), "\n")
 
 
 ```
+Description:The decision tree model trained on 80% of the data and
+tested on the remaining 20% achieved an accuracy of 54.62%. Key
+influential variables include sulfate, solids, hardness, organic carbon,
+and trihalomethanes. After pruning, the accuracy increased slightly to
+54.90%, but the pruned tree showed limited predictive capability,
+classifying all instances as "Not Potable." The model's Area Under the
+Curve (AUC) for the ROC curve is 0.5313, indicating modest
+discriminatory power. Overall, further exploration and parameter tuning
+may be required to enhance the model's predictive performance for water
+potability.
+
+
 
 Splitting the data set into two subsets: Training(90%) and Testing(10%):
 
@@ -1230,6 +1342,15 @@ abline(a = 0, b = 1, col = "gray", lty = 2)
 # Print AUC
 cat("AUC:", auc(roc_curve), "\n")
 ```
+Description:Certainly. In the analysis, a decision tree model was
+constructed using 80% of the data for training and 20% for testing. The
+tree, which includes nodes representing decision points based on
+features like Solids and Sulfate, exhibited an accuracy of 59.32%. The
+sensitivity (True Positive Rate) was 91.18%, specificity (True Negative
+Rate) was 16.00%, and the positive predictive value (precision) was
+59.62%. The prevalence in the dataset was 57.63%.
+
+
 
 ### Comparison Criteria:
 
@@ -1342,6 +1463,9 @@ fviz_dend(hc.cut,rect= TRUE)
 fviz_cluster(hc.cut, ellipse.type= "convex")
 ```
 
+as seen by the graph the cluster plot with two clusters shows an overlap 
+
+
 ### average silhouette
 
 This method calculates the average silhouette width for different values of k, determining how well data points fit into their assigned clusters.
@@ -1451,6 +1575,8 @@ fviz_dend(hc2.cut,rect= TRUE)
 fviz_cluster(hc2.cut, ellipse.type= "convex")
 ```
 
+as seen by the graph the cluster plot with three clusters shows an overlap, objects within the same cluster are not close to each 
+
 ### average silhouette
 
 This method calculates the average silhouette width for different values of k, determining how well data points fit into their assigned clusters.
@@ -1559,6 +1685,8 @@ fviz_dend(hc3.cut,rect= TRUE)
 fviz_cluster(hc3.cut, ellipse.type= "convex")
 ```
 
+as seen by the graph the cluster plot with four clusters shows an overlap, objects within the same cluster are not close to each 
+
 ### average silhouette
 
 This method calculates the average silhouette width for different values of k, determining how well data points fit into their assigned clusters.
@@ -1665,6 +1793,8 @@ fviz_dend(hc4.cut,rect= TRUE)
 # Visualize cluster
 fviz_cluster(hc4.cut, ellipse.type= "convex")
 ```
+
+as seen by the graph the cluster plot with five clusters shows the least overlap, objects within the same cluster are closer each 
 
 ### average silhouette
 
@@ -1969,7 +2099,7 @@ A classification approach is more fitting for the task of determining water pota
 |                    |                                                                                                                                                                                                                                                                                       |
 |                    |         ![](Image/Classification/Picture12.5.png){width="450"}                                                                                                                                                                                                                        |
 +--------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| **Clustering**     | During our experimentation, we tested with four different numbers of K clusters:                                                                                                                                                                                                      |
+| **Clustering**     | During our experimentation, we tested with five different numbers of K clusters:                                                                                                                                                                                                      |
 |                    |                                                                                                                                                                                                                                                                                       |
 |                    | ![](Image/Clustering/K.png){width="500"}                                                                                                                                                                                                                                              |
 |                    |                                                                                                                                                                                                                                                                                       |
