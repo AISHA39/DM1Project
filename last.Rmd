@@ -626,7 +626,8 @@ wp
 
 
 ### Checking for imbalanced dataset:
-Imbalanced data occurs when one or more classes in a dataset are disproportionately represented, posing challenges for machine learning models. The skewed distribution can lead models to favor the majority class, resulting in poor performance on minority classes. 
+Imbalanced data occurs when one or more classes in a dataset are disproportionately represented, posing challenges for machine learning models. The skewed distribution can lead models to favor the majority class, resulting in poor performance on minority classes.
+
 ```{r}
 class_distribution <- table(water_potability$Potability)
 print(class_distribution)
